@@ -1,0 +1,71 @@
+# Default values for clamav.
+# This is a YAML-formatted file.
+# Declare variables to be passed into your templates.
+
+nameOverride: ""
+fullnameOverride: ""
+
+servicePort: 443
+
+serviceAccount:
+  annotations: {}
+  name: clamav-notify
+
+clamavNotify:
+  image: quay.io/ukhomeofficedigital/acp-clamav-notify
+  version: ""
+  freshclam:
+    mirrors:
+      - db.uk.clamav.net
+      - database.clamav.net
+  volume:
+    storageClass: gp2-encrypted
+    size: 5
+
+clamavHTTP:
+  image: quay.io/ukhomeofficedigital/acp-clamav-http
+  version: ""
+  resources:
+    limits:
+      cpu: 400m
+      memory: 3000M
+
+clamav:
+  image: quay.io/ukhomeofficedigital/acp-clamav
+  version: ""
+  freshclam:
+    mirrors:
+      - db.uk.clamav.net
+      - database.clamav.net
+  certificate:
+    create: true
+    secretName: ""
+    issuer:
+      name: platform-tls
+      kind: ClusterIssuer
+  scaling:
+    minReplicas: 2
+    maxReplicas: 10
+    cpuTarget: 20
+    memoryTarget: 40
+  limits:
+    fileSize: 20
+    scanSize: 100
+  resources:
+    requests:
+      cpu: 1000m
+      memory: 2000M
+    limits:
+      cpu: 1500m
+      memory: 3000M
+
+nginxProxy:
+  image: quay.io/ukhomeofficedigital/nginx-proxy
+  version: v3.4.20
+  resources:
+    requests:
+      ephemeral-storage: "2Gi"
+    limits:
+      cpu: 200m
+      memory: 400M
+      ephemeral-storage: "4Gi"

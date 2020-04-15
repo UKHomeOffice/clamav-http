@@ -1,0 +1,47 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: {{ include "clamav.fullname" . }}-notify
+  labels:
+    {{- include "clamav.labels" . | nindent 4 }}
+spec:
+  replicas: {{ .Values.replicaCount }}
+  selector:
+    matchLabels:
+      name: {{ include "clamav.fullname" . }}-notify
+  template:
+    metadata:
+      labels:
+        name: {{ include "clamav.fullname" . }}-notify
+    spec:
+      serviceAccountName: {{ include "clamav.fullname" . }}-notify
+      securityContext:
+        fsGroup: 1000
+      containers:
+        - name: {{ .Chart.Name }}
+          image: "{{ .Values.clamavNotify.image }}:{{ .Values.clamavNotify.version }}"
+          imagePullPolicy: Always
+          ports:
+            - name: http
+              containerPort: 8080
+              protocol: TCP
+          livenessProbe:
+            httpGet:
+              path: /
+              port: http
+          readinessProbe:
+            httpGet:
+              path: /
+              port: http
+          volumeMounts:
+          - name: clamav-notify-storage
+            mountPath: /var/lib/clamav
+          - name: config-volume
+            mountPath: /etc/clamav
+      volumes:
+      - name: clamav-notify-storage
+        persistentVolumeClaim:
+          claimName: clamav-notify
+      - name: config-volume
+        configMap:
+          name: clamav-notify-config
