@@ -1,0 +1,152 @@
+apiVersion: certmanager.k8s.io/v1alpha1
+kind: Certificate
+metadata:
+  name: {{ include "clamav.fullname" . }}-tls
+spec:
+  secretName: {{ include "clamav.fullname" . }}-tls
+  issuerRef:
+    name: platform-tls
+    kind: ClusterIssuer
+  commonName: clamav.{{.Release.Namespace}}.svc.cluster.local
+  dnsNames:
+  - clamav
+  - clamav.{{.Release.Namespace}}.svc
+---
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: clamav
+  labels:
+    name: clamav
+spec:
+  replicas: 3
+  selector:
+    matchLabels:
+      name: clamav
+  template:
+    metadata:
+      labels:
+        name: clamav
+    spec:
+      containers:
+      - name: clamav-http
+        image: "{{ .Values.clamavHTTP.image }}:{{ .Values.clamavHTTP.version }}"
+        ports:
+        - containerPort: 8080
+          name: api
+          protocol: TCP
+        livenessProbe:
+          httpGet:
+            path: /healthz
+            port: 8080
+          initialDelaySeconds: 10
+          timeoutSeconds: 5
+          periodSeconds: 5
+          failureThreshold: 10
+        readinessProbe:
+          httpGet:
+            path: /healthz
+            port: 8080
+          initialDelaySeconds: 10
+          timeoutSeconds: 5
+          periodSeconds: 5
+          failureThreshold: 10
+        resources:
+         limits:
+          cpu: 400m
+          memory: 3000M
+          ephemeral-storage: 3000M
+      - name: clamav
+        image: "{{ .Values.clamav.image }}:{{ .Values.clamav.version }}"
+        command: ['clamd']
+        ports:
+        - containerPort: 3310
+          name: api
+          protocol: TCP
+        resources:
+         limits:
+          cpu: 1500m
+          memory: 3000M
+        volumeMounts:
+          - mountPath: /var/lib/clamav
+            name: signatures
+          - mountPath: /etc/clamav
+            name: config-volume
+      - name: nginx
+        image: quay.io/ukhomeofficedigital/nginx-proxy:v3.4.20
+        env:
+        - name: PROXY_SERVICE_HOST
+          value: 127.0.0.1
+        - name: PROXY_SERVICE_PORT
+          value: "8080"
+        - name: ENABLE_UUID_PARAM
+          value: "FALSE"
+        - name: NAXSI_USE_DEFAULT_RULES
+          value: "FALSE"
+        - name: ERROR_REDIRECT_CODES
+          value: "599"
+        - name: CLIENT_MAX_BODY_SIZE
+          value: '200'
+        - name: SERVER_CERT
+          value: /certs/tls.crt
+        - name: SERVER_KEY
+          value: /certs/tls.key
+        - name: SSL_CIPHERS
+          value: ECDHE-RSA-AES128-GCM-SHA256:AES256+EECDH:AES256+EDH:!aNULL
+        - name: ADD_NGINX_SERVER_CFG
+          value: |
+            add_header Cache-Control private;
+            add_header X-Forwarded-Proto "https";
+        livenessProbe:
+          httpGet:
+            path: /
+            port: 8080
+          initialDelaySeconds: 10
+          timeoutSeconds: 5
+          periodSeconds: 5
+          failureThreshold: 10
+        readinessProbe:
+          httpGet:
+            path: /
+            port: 8080
+          initialDelaySeconds: 10
+          timeoutSeconds: 5
+          periodSeconds: 5
+          failureThreshold: 10
+        ports:
+         - name: https
+           containerPort: 10443
+        resources:
+         requests:
+          ephemeral-storage: "2Gi"
+         limits:
+          cpu: 200m
+          memory: 400M
+          ephemeral-storage: "4Gi"
+        volumeMounts:
+          - mountPath: /certs
+            name: certs
+      initContainers:
+      - name: signatures
+        image: "{{ .Values.clamav.image }}:{{ .Values.clamav.version }}"
+        command: ['freshclam', '--stdout']
+        volumeMounts:
+          - mountPath: /var/lib/clamav
+            name: signatures
+          - mountPath: /etc/clamav
+            name: config-volume
+      securityContext:
+        runAsNonRoot: true
+      volumes:
+      - name: bundle
+        configMap:
+          name: bundle
+      - name: certs
+        secret:
+          secretName: {{ include "clamav.fullname" . }}-tls
+      - name: signatures
+        emptyDir:
+          medium: Memory
+      - name: config-volume
+        configMap:
+          name: clamav-config

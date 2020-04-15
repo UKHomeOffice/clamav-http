@@ -1,0 +1,40 @@
+apiVersion: v1
+kind: ConfigMap
+metadata:
+  name: clamav-config
+data:
+  clamd.conf: |
+    LogFile /dev/stdout
+    LogTime yes
+    LogClean yes
+    LogSyslog no
+    LogVerbose yes
+    DatabaseDirectory /var/lib/clamav
+    TCPSocket 3310
+    Foreground yes
+  freshclam.conf: |
+    LogTime yes
+    LogVerbose yes
+    LogSyslog no
+    DatabaseOwner clam
+    DatabaseMirror http://clamav-notify
+    DatabaseMirror db.uk.clamav.net
+    DatabaseMirror database.clamav.net
+    Foreground yes
+    TestDatabases no
+    NotifyClamd no
+---
+apiVersion: v1
+kind: ConfigMap
+metadata:
+  name: clamav-notify-config
+data:
+  freshclam.conf: |
+    Checks 24
+    CompressLocalDatabase yes
+    DatabaseOwner clam
+    DatabaseMirror db.uk.clamav.net
+    DatabaseMirror database.clamav.net
+    TestDatabases yes
+    OnUpdateExecute python /clam/notify.py
+    LogVerbose yes
