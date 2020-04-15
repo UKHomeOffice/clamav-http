@@ -1,0 +1,67 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: {{ include "clamav.fullname" . }}-notify
+  labels:
+    {{- include "clamav.labels" . | nindent 4 }}
+spec:
+  revisionHistoryLimit: 1
+  replicas: 1
+  strategy:
+    type: Recreate
+  selector:
+    matchLabels:
+      name: {{ include "clamav.fullname" . }}-notify
+  template:
+    metadata:
+      labels:
+        name: {{ include "clamav.fullname" . }}-notify
+    spec:
+      serviceAccountName: {{ .Values.serviceAccount.name }}
+      securityContext:
+        fsGroup: 1000
+      containers:
+      - name: {{ .Chart.Name }}
+        image: "{{ .Values.clamavNotify.image }}:{{ default .Chart.AppVersion .Values.clamavNotify.version }}"
+        imagePullPolicy: Always
+        resources: {{ toYaml .Values.clamavNotify.resources | nindent 10 }}
+        ports:
+        - name: http
+          containerPort: 8080
+          protocol: TCP
+        livenessProbe:
+          initialDelaySeconds: 20
+          periodSeconds: 5
+          failureThreshold: 3
+          httpGet:
+            path: /
+            port: http
+        readinessProbe:
+          httpGet:
+            path: /bytecode.cvd
+            port: http
+          initialDelaySeconds: 60
+          timeoutSeconds: 10
+          periodSeconds: 15
+          failureThreshold: 5
+        env:
+        - name: LIGHTTPD_CONFIG
+          value: /etc/config/lighttpd.conf
+        - name: LIGHTTPD_ROOT
+          value: /var/lib/clamav/mirror
+        volumeMounts:
+        - name: clamav-notify-storage
+          mountPath: /var/lib/clamav
+        - name: config-volume
+          mountPath: /etc/clamav/freshclam.conf
+          subPath: freshclam.conf
+        - name: config-volume
+          mountPath: /etc/config/lighttpd.conf
+          subPath: lighttpd.conf
+      volumes:
+      - name: clamav-notify-storage
+        persistentVolumeClaim:
+          claimName: clamav-notify
+      - name: config-volume
+        configMap:
+          name: clamav-notify-config
