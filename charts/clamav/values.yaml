@@ -1,0 +1,101 @@
+# Default values for clamav.
+# This is a YAML-formatted file.
+# Declare variables to be passed into your templates.
+
+# nameOverride -- override the name of the clamav chart
+nameOverride: ""
+# fullnameOverride -- override the full name of the clamav chart
+fullnameOverride: ""
+
+service:
+  # service.port -- The port to be used by the clamav service
+  port: 443
+  # service.ingress -- Specifies ingress rules for the clamav service
+  ingress:
+  - podSelector: {}
+
+serviceAccount:
+  annotations: {}
+  name: clamav-notify
+
+clamavNotify:
+  # clamavNotify.image -- The clamav-notify docker image
+  image: quay.io/ukhomeofficedigital/acp-clamav-notify
+  # clamavNotify.version -- The clamav-notify docker image version - defaults to .Chart.appVersion
+  version: ""
+  resources:
+    # clamavNotify.resources -- The resource requests and limits for the clamav-http service
+    requests:
+      cpu: 400m
+      memory: 1000M
+  freshclam:
+    # clamavNotift.freshclam.mirrors -- A list of clamav mirrors to be used by the clamav-notify service
+    mirrors:
+      - db.uk.clamav.net
+      - database.clamav.net
+  volume:
+    storageClass: gp2-encrypted
+    size: 5
+
+clamavHTTP:
+  # clamavHTTP.image -- The clamav-http docker image
+  image: quay.io/ukhomeofficedigital/acp-clamav-http
+  # clamavHTTP.version -- The clamav-http docker image version - defaults to .Chart.appVersion
+  version: ""
+  resources:
+    # clamavHTTP.resources -- The resource requests and limits for the clamav-http service
+    limits:
+      cpu: 400m
+      memory: 3000M
+
+clamav:
+  image: quay.io/ukhomeofficedigital/acp-clamav # clamav.image -- The clamav docker image
+  # clamav.version -- The clamav docker image version - defaults to .Chart.appVersion
+  version: ""
+  freshclam:
+    # clamav.freshclam.mirrors -- A list of clamav mirrors to be used by the clamav service
+    mirrors:
+      - db.uk.clamav.net
+      - database.clamav.net
+  certificate:
+    create: true
+    secretName: ""
+    issuer:
+      name: platform-tls
+      kind: ClusterIssuer
+  scaling:
+    # clamav.scaling.minReplicas -- The minumum number of clamav replicas
+    minReplicas: 2
+    # clamav.scaling.maxReplicas -- The maximum number of clamav replicas
+    maxReplicas: 10
+    # clamav.scaling.cpuTarget -- The target cpu usage percentage for clamav
+    cpuTarget: 60
+    # clamav.scaling.memoryTarget -- The target memory usage percentage for clamav
+    memoryTarget: 60
+  limits:
+    # clamav.limits.fileSize -- The largest file size scanable by clamav, in MB
+    fileSize: 20
+    # clamav.limits.scanSize -- The largest scan size permitted in clamav, in MB
+    scanSize: 100
+  resources:
+    # clamav.resources -- The resource requests and limits for the clamav service
+    requests:
+      cpu: 1000m
+      memory: 2000M
+    limits:
+      cpu: 1500m
+      memory: 3000M
+
+nginxProxy:
+  # nginxProxy.image -- The nginx proxy docker image
+  image: quay.io/ukhomeofficedigital/nginx-proxy
+  # nginxProxy.image -- The nginx proxy docker image version
+  version: v3.4.20
+  # nginxProxy.resources -- The resource requests and limits for the nginx proxy service
+  resources:
+    requests:
+      ephemeral-storage: "2Gi"
+    limits:
+      cpu: 200m
+      memory: 400M
+      ephemeral-storage: "4Gi"
