@@ -1,0 +1,122 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: {{ include "clamav.fullname" . }}
+  labels:
+    {{- include "clamav.labels" . | nindent 4 }}
+spec:
+  revisionHistoryLimit: 2
+  replicas: {{ .Values.clamav.scaling.minReplicas }}
+  selector:
+    matchLabels:
+      name: {{ include "clamav.fullname" . }}
+  template:
+    metadata:
+      labels:
+        name: {{ include "clamav.fullname" . }}
+    spec:
+      containers:
+      - name: clamav
+        image: "{{ .Values.clamav.image }}:{{ default .Chart.AppVersion .Values.clamav.version }}"
+        command: ['clamd']
+        ports:
+        - containerPort: 3310
+          name: api
+          protocol: TCP
+        resources: {{ toYaml .Values.clamav.resources | nindent 10 }}
+        volumeMounts:
+          - mountPath: /var/lib/clamav
+            name: signatures
+          - mountPath: /etc/clamav
+            name: config-volume
+      - name: clamav-http
+        image: "{{ .Values.clamavHTTP.image }}:{{ default .Chart.AppVersion .Values.clamavHTTP.version }}"
+        ports:
+        - containerPort: 8080
+          name: api
+          protocol: TCP
+        livenessProbe:
+          httpGet:
+            path: /v1alpha/healthz
+            port: 8080
+          initialDelaySeconds: 10
+          timeoutSeconds: 5
+          periodSeconds: 5
+          failureThreshold: 10
+        readinessProbe:
+          httpGet:
+            path: /v1alpha/healthz
+            port: 8080
+          initialDelaySeconds: 10
+          timeoutSeconds: 5
+          periodSeconds: 5
+          failureThreshold: 10
+        resources: {{ toYaml .Values.clamav.resources | nindent 10 }}
+      - name: nginx
+        image: {{.Values.nginxProxy.image}}:{{.Values.nginxProxy.version}}
+        env:
+        - name: PROXY_SERVICE_HOST
+          value: 127.0.0.1
+        - name: PROXY_SERVICE_PORT
+          value: "8080"
+        - name: ENABLE_UUID_PARAM
+          value: "FALSE"
+        - name: NAXSI_USE_DEFAULT_RULES
+          value: "FALSE"
+        - name: ERROR_REDIRECT_CODES
+          value: "599"
+        - name: CLIENT_MAX_BODY_SIZE
+          value: '{{.Values.clamav.limits.fileSize}}'
+        - name: SERVER_CERT
+          value: /certs/tls.crt
+        - name: SERVER_KEY
+          value: /certs/tls.key
+        - name: SSL_CIPHERS
+          value: ECDHE-RSA-AES128-GCM-SHA256:AES256+EECDH:AES256+EDH:!aNULL
+        - name: ADD_NGINX_SERVER_CFG
+          value: |
+            add_header Cache-Control private;
+            add_header X-Forwarded-Proto "https";
+        livenessProbe:
+          httpGet:
+            path: /
+            port: 8080
+          initialDelaySeconds: 10
+          timeoutSeconds: 5
+          periodSeconds: 5
+          failureThreshold: 10
+        readinessProbe:
+          httpGet:
+            path: /
+            port: 8080
+          initialDelaySeconds: 10
+          timeoutSeconds: 5
+          periodSeconds: 5
+          failureThreshold: 10
+        ports:
+         - name: https
+           containerPort: 10443
+        resources: {{ toYaml .Values.nginxProxy.resources | nindent 10 }}
+        volumeMounts:
+          - mountPath: /certs
+            name: certs
+      initContainers:
+      - name: signatures
+        image: "{{ .Values.clamav.image }}:{{ default .Chart.AppVersion .Values.clamav.version }}"
+        command: ['freshclam', '--stdout', '--no-dns']
+        volumeMounts:
+          - mountPath: /var/lib/clamav
+            name: signatures
+          - mountPath: /etc/clamav
+            name: config-volume
+      securityContext:
+        runAsNonRoot: true
+      volumes:
+      - name: certs
+        secret:
+          secretName: {{ include "clamav.certsecretname" . }}
+      - name: signatures
+        emptyDir: {}
+      - name: config-volume
+        configMap:
+          name: {{ include "clamav.fullname" . }}-config
