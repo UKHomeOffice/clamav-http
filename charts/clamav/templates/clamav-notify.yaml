@@ -23,7 +23,7 @@ spec:
           imagePullPolicy: Always
           ports:
             - name: http
-              containerPort: 3000
+              containerPort: 3310
               protocol: TCP
           livenessProbe:
             httpGet:
