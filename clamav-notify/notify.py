@@ -1,4 +1,4 @@
-import sys, time
+import sys, time, os
 from kubernetes import client, config
 
 

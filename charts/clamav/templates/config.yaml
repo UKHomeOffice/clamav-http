@@ -36,5 +36,5 @@ data:
     DatabaseMirror db.uk.clamav.net
     DatabaseMirror database.clamav.net
     TestDatabases yes
-    OnUpdateExecute python /clam/notify.py
+    OnUpdateExecute python /clam/notify.py clamav clamav
     LogVerbose yes
