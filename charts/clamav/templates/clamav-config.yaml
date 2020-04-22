@@ -22,3 +22,7 @@ data:
     DatabaseMirror database.clamav.net
     Foreground yes
     NotifyClamd no
+    MaxScanSize {{.Values.clamav.limits.scanSize}}M
+    MaxFileSize MaxScanSize {{.Values.clamav.limits.fileSize}}M
+    MaxRecursion NUMBER
+    MaxFiles NUMBER

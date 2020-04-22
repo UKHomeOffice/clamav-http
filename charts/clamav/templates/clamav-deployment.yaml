@@ -1,10 +1,9 @@
----
 apiVersion: apps/v1
 kind: Deployment
 metadata:
   name: clamav
   labels:
-    name: clamav
+    {{- include "clamav.labels" . | nindent 4 }}
 spec:
   replicas: 3
   selector:
@@ -39,10 +38,10 @@ spec:
           periodSeconds: 5
           failureThreshold: 10
         resources:
-         limits:
-          cpu: 400m
-          memory: 3000M
-          ephemeral-storage: 3000M
+          limits:
+            cpu: 400m
+            memory: 3000M
+            ephemeral-storage: 3000M
       - name: clamav
         image: "{{ .Values.clamav.image }}:{{ .Values.clamav.version }}"
         command: ['clamd']
@@ -51,16 +50,14 @@ spec:
           name: api
           protocol: TCP
         resources:
-         limits:
-          cpu: 1500m
-          memory: 3000M
+          {{ toYaml .Values.clamav.resources | nindent 10 }}
         volumeMounts:
           - mountPath: /var/lib/clamav
             name: signatures
           - mountPath: /etc/clamav
             name: config-volume
       - name: nginx
-        image: quay.io/ukhomeofficedigital/nginx-proxy:v3.4.20
+        image: {{.Values.nginxProxy.image}}:{{.Values.nginxProxy.version}}
         env:
         - name: PROXY_SERVICE_HOST
           value: 127.0.0.1
@@ -73,7 +70,7 @@ spec:
         - name: ERROR_REDIRECT_CODES
           value: "599"
         - name: CLIENT_MAX_BODY_SIZE
-          value: '200'
+          value: '{{.Values.clamav.limits.fileSize}}'
         - name: SERVER_CERT
           value: /certs/tls.crt
         - name: SERVER_KEY

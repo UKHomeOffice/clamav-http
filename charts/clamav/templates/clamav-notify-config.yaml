@@ -10,6 +10,6 @@ data:
     DatabaseMirror db.uk.clamav.net
     DatabaseMirror database.clamav.net
     TestDatabases yes
-    OnUpdateExecute python /clam/notify.py clamav clamav
+    OnUpdateExecute python /clam/notify.py {{ .Release.Namespace }} {{ include "clamav.fullname" . }}
     LogVerbose yes
     NotifyClamd no

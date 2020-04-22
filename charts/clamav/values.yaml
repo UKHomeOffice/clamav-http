@@ -19,8 +19,19 @@ clamavNotify:
   volume:
     storageClass: gp2-encrypted
     size: 5
-  
 
 clamav:
   image: quay.io/ukhomeofficedigital/acp-clamav
   version: 0.0.6
+  limits:
+    fileSize: 20
+    scanSize: 100
+  resources:
+    limits:
+      cpu: 1500m
+      memory: 3000M
+  signaturesInMemory: false
+
+nginxProxy:
+  image: quay.io/ukhomeofficedigital/nginx-proxy
+  version: v3.4.20

@@ -9,4 +9,4 @@ spec:
   ingress:
   - ports:
     - protocol: TCP
-      port: 80808
+      port: 8080
