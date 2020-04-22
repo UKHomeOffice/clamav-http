@@ -1,12 +1,12 @@
 apiVersion: v1
 kind: PersistentVolumeClaim
 metadata:
-  name: clamav-notify
+  name: {{ include "clamav.fullname" . }}-notify
   annotations:
-    volume.beta.kubernetes.io/storage-class: gp2-encrypted
+    volume.beta.kubernetes.io/storage-class: {{ .Values.clamvNotify.volume.storageClass }}
 spec:
   accessModes:
     - ReadWriteOnce
   resources:
     requests:
-      storage: 5Gi
+      storage: {{ .Values.clamvNotify.volume.size }}Gi
