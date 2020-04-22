@@ -5,18 +5,14 @@
 nameOverride: ""
 fullnameOverride: ""
 
-serviceAccount:
-  annotations: {}
-  name: clamav-notify
-
 clamavHTTP:
   image: quay.io/ukhomeofficedigital/acp-clamav-http
-  version: 0.0.4
+  version: 0.0.6
 
 clamavNotify:
   image: quay.io/ukhomeofficedigital/acp-clamav-notify
-  version: 0.0.4
+  version: 0.0.6
 
 clamav:
   image: quay.io/ukhomeofficedigital/acp-clamav
-  version: 0.0.4
+  version: 0.0.6

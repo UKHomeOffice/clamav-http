@@ -1,0 +1,13 @@
+apiVersion: certmanager.k8s.io/v1alpha1
+kind: Certificate
+metadata:
+  name: {{ include "clamav.fullname" . }}-tls
+spec:
+  secretName: {{ include "clamav.fullname" . }}-tls
+  issuerRef:
+    name: platform-tls
+    kind: ClusterIssuer
+  commonName: clamav.{{.Release.Namespace}}.svc.cluster.local
+  dnsNames:
+  - clamav
+  - clamav.{{.Release.Namespace}}.svc

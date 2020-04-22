@@ -16,6 +16,6 @@ COPY notify.py start.sh lighttpd.conf ./
 
 USER 1000
 
-EXPOSE 3310
+EXPOSE 8080
 
 ENTRYPOINT ["./start.sh"]
