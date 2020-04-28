@@ -7,7 +7,7 @@ COPY go.mod go.sum main.go ./
 COPY server/  ./server/
 
 RUN CGO_ENABLED=0 GOOS=linux go install -v \
-            github.com/asmith030/go-clamav-rest
+            github.com/ukhomeoffice/clamav-http/clamav-http
 
 FROM alpine:3.11.3
 RUN apk --no-cache add ca-certificates
