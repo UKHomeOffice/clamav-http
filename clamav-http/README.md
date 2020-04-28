@@ -5,7 +5,7 @@ Clamav proxy based on https://github.com/solita/clamav-rest/ and implemented in 
 ### Usage
 
 ```
-Usage of go-clamav-rest:
+Usage of clamav-http:
   -host string
     	Address of the clamd instance (default "localhost")
   -listenPort int
