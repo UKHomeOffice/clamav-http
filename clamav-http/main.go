@@ -6,8 +6,8 @@ import (
 	"os"
 	"time"
 
-	"github.com/asmith030/go-clamav-rest/server"
 	"github.com/sirupsen/logrus"
+	"github.com/ukhomeoffice/clamav-http/clamav-http/server"
 )
 
 var (

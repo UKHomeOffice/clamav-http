@@ -1,4 +1,4 @@
-module github.com/asmith030/go-clamav-rest
+module github.com/ukhomeoffice/clamav-http/clamav-http
 
 go 1.13
 
