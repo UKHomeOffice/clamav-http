@@ -3,7 +3,11 @@ Clamav instance with http api. To supersede https://github.com/UKHomeOffice/dock
 
 ## Installation
 
-Helmy helm stuff here
+```
+helm install -n <namespace> clamav ./charts/clamav
+```
+
+Clamav will be installed in the namespace and available at https://clamav/
 
 ## Components
 

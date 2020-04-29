@@ -5,7 +5,10 @@
 nameOverride: ""
 fullnameOverride: ""
 
-servicePort: 443
+service:
+  port: 443
+  ingress:
+    - podSelector: {}
 
 serviceAccount:
   annotations: {}
