@@ -20,5 +20,5 @@ Usage of clamav-http:
 
 | Version | Endpoint | Notes |
 |---|---|---|
-|[v0](/server/v0/v0.md) | / | Based on solita/clamav-rest |
-|[v1alpha](/server/v1alpha/v1alpha.md) | /v1alpha/ | Implements error code on malware found |
+|[v0](/server/v0/doc.md) | / | Based on solita/clamav-rest |
+|[v1alpha](/server/v1alpha/doc.md) | /v1alpha/ | Implements error code on malware found |
