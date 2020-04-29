@@ -3,7 +3,7 @@
 ## Example Request
 
 ```
-curl -s -F "name=eicar" -F "file=@test/eicar.txt" "$1/v1alpha/scan"
+curl -s -F "name=eicar" -F "file=@test/eicar.txt" http://clamav-http/v1alpha/scan
 ```
 
 ## Response
