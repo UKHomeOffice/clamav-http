@@ -9,7 +9,7 @@ An extremely barebones clamav/freshclam image with no config. Expects configurat
 
 ## [clamav-http](/clamav-http/README.md)
 
-Written in golang, provides two http apis to clamav. The first based on clamav-rest at the / endpoint, the second at the /v2/ endpoint and documented here
+Written in golang, provides an http based api to clamav
 
 ## clamav-notify
 
