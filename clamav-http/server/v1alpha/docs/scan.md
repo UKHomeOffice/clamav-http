@@ -8,7 +8,7 @@ curl -s -F "name=eicar" -F "file=@test/eicar.txt" http://clamav-http/v1alpha/sca
 
 ## Response
 
-### File is infectes
+### File is infected
 
 ```
 HTTP/1.1 403 Forbidden
