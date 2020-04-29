@@ -1,4 +1,4 @@
-package v2alpha
+package v0
 
 import (
 	"net/http"
@@ -7,14 +7,14 @@ import (
 	"github.com/sirupsen/logrus"
 )
 
-type ScanHandler struct {
+type ScanReplyHandler struct {
 	Address      string
 	Max_file_mem int64
 	Logger       *logrus.Logger
 }
 
-func (sh *ScanHandler) ServeHTTP(w http.ResponseWriter, r *http.Request) {
-	err := r.ParseMultipartForm(sh.Max_file_mem * 1024 * 1024)
+func (srh *ScanReplyHandler) ServeHTTP(w http.ResponseWriter, r *http.Request) {
+	err := r.ParseMultipartForm(srh.Max_file_mem * 1024 * 1024)
 
 	if err != nil {
 		w.WriteHeader(http.StatusInternalServerError)
@@ -37,7 +37,7 @@ func (sh *ScanHandler) ServeHTTP(w http.ResponseWriter, r *http.Request) {
 		w.Write([]byte("not okay"))
 	}
 
-	c := clamd.NewClamd(sh.Address)
+	c := clamd.NewClamd(srh.Address)
 	response, err := c.ScanStream(f, make(chan bool))
 
 	if err != nil {
@@ -46,15 +46,8 @@ func (sh *ScanHandler) ServeHTTP(w http.ResponseWriter, r *http.Request) {
 	}
 
 	result := <-response
-	if result.Status == "FOUND" {
-		w.WriteHeader(http.StatusForbidden)
-		sh.Logger.Infof("Scanning %v: found", files[0].Filename)
-		w.Write([]byte("Everything ok : false\n"))
-	} else {
-		w.WriteHeader(http.StatusOK)
-		sh.Logger.Infof("Scanning %v: clean", files[0].Filename)
-		w.Write([]byte("Everything ok : true\n"))
-	}
-
+	w.WriteHeader(http.StatusOK)
+	srh.Logger.Infof("Scanning %v and returning reply", files[0].Filename)
+	w.Write([]byte(result.Raw))
 	return
 }

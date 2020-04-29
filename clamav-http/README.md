@@ -1,6 +1,6 @@
 ## clamav-http
 
-Clamav proxy based on https://github.com/solita/clamav-rest/ and implemented in golang
+Clamav proxy supporting the api of https://github.com/solita/clamav-rest/ and implemented in golang
 
 ### Usage
 
@@ -15,3 +15,10 @@ Usage of clamav-http:
   -port int
     	TCP port of the clamd instance (default 3310)
 ```
+
+### API
+
+| Version | Endpoint | Notes |
+|---|---|---|
+|[v0](/server/v0/v0.md) | / | Based on solita/clamav-rest |
+|[v1alpha](/server/v1alpha/v1alpha.md) | /v1alpha/ | Implements error code on malware found |

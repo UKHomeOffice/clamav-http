@@ -1,4 +1,4 @@
-package v1
+package v1alpha
 
 import (
 	"net/http"
@@ -46,11 +46,12 @@ func (sh *ScanHandler) ServeHTTP(w http.ResponseWriter, r *http.Request) {
 	}
 
 	result := <-response
-	w.WriteHeader(http.StatusOK)
 	if result.Status == "FOUND" {
+		w.WriteHeader(http.StatusForbidden)
 		sh.Logger.Infof("Scanning %v: found", files[0].Filename)
 		w.Write([]byte("Everything ok : false\n"))
 	} else {
+		w.WriteHeader(http.StatusOK)
 		sh.Logger.Infof("Scanning %v: clean", files[0].Filename)
 		w.Write([]byte("Everything ok : true\n"))
 	}

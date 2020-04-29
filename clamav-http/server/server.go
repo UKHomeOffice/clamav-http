@@ -7,32 +7,32 @@ import (
 
 	"github.com/sirupsen/logrus"
 
-	"github.com/ukhomeoffice/clamav-http/clamav-http/server/v1"
-	"github.com/ukhomeoffice/clamav-http/clamav-http/server/v2alpha"
+	"github.com/ukhomeoffice/clamav-http/clamav-http/server/v0"
+	"github.com/ukhomeoffice/clamav-http/clamav-http/server/v1alpha"
 )
 
 func RunHTTPListener(clamd_address string, port int, max_file_mem int64, logger *logrus.Logger) error {
 	m := http.NewServeMux()
-	hh := &v1.HealthHandler{
+	hh := &v0.HealthHandler{
 		Healthy: false,
 		Logger:  logger,
 	}
 	m.Handle("/healthz", hh)
-	m.Handle("/", &v1.PingHandler{
+	m.Handle("/", &v0.PingHandler{
 		Address: clamd_address,
 		Logger:  logger,
 	})
-	m.Handle("/scan", &v1.ScanHandler{
+	m.Handle("/scan", &v0.ScanHandler{
 		Address:      clamd_address,
 		Max_file_mem: max_file_mem,
 		Logger:       logger,
 	})
-	m.Handle("/scanReply", &v1.ScanReplyHandler{
+	m.Handle("/scanReply", &v0.ScanReplyHandler{
 		Address:      clamd_address,
 		Max_file_mem: max_file_mem,
 		Logger:       logger,
 	})
-	m.Handle("/v2alpha/scan", &v2alpha.ScanHandler{
+	m.Handle("/v1alpha/scan", &v1alpha.ScanHandler{
 		Address:      clamd_address,
 		Max_file_mem: max_file_mem,
 		Logger:       logger,
