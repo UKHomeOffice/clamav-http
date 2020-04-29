@@ -7,7 +7,7 @@ clamav-http is made up of three components, clamav, clamav-http, and clamav-noti
 
 An extremely barebones clamav/freshclam image with no config. Expects configuration files to be provided via kubernetes configmaps.
 
-## clamav-http
+## [clamav-http](/clamav-http/README.md)
 
 Written in golang, provides two http apis to clamav. The first based on clamav-rest at the / endpoint, the second at the /v2/ endpoint and documented here
 
