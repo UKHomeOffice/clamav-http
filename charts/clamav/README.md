@@ -13,8 +13,7 @@ Current chart version is `0.1.1`
 | Key | Type | Default | Description |
 |-----|------|---------|-------------|
 | clamav.certificate.create | bool | `true` | Should a certificate be created for the clamav service |
-| clamav.certificate.issuer.kind | string | `"ClusterIssuer"` |  |
-| clamav.certificate.issuer.name | string | `"platform-tls"` |  |
+| clamav.certificate.issuer | object | `{"kind":"ClusterIssuer","name":"platform-tls"}` | The issuer to use when creating a certificate |
 | clamav.certificate.secretName | string | `""` | Override the default certificate secret name |
 | clamav.freshclam.mirrors | list | `["db.uk.clamav.net","database.clamav.net"]` | A list of clamav mirrors to be used by the clamav service |
 | clamav.image | string | `"quay.io/ukhomeofficedigital/acp-clamav"` | The clamav docker image |

@@ -67,7 +67,7 @@ clamav:
     create: true
     # clamav.certificate.secretName -- Override the default certificate secret name
     secretName: ""
-    # clamav.certificate.issue -- The issuer to use when creating a certificate
+    # clamav.certificate.issuer -- The issuer to use when creating a certificate
     issuer:
       name: platform-tls
       kind: ClusterIssuer
