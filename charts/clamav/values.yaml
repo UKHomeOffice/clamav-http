@@ -31,6 +31,8 @@ clamavNotify:
       cpu: 400m
       memory: 1000M
   freshclam:
+    # clamavNotify.freshclam.checkFrequency -- The number of checks for new virus definitions per day
+    checkFrequency: 24
     # clamavNotify.freshclam.mirrors -- A list of clamav mirrors to be used by the clamav-notify service
     mirrors:
       - db.uk.clamav.net

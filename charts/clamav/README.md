@@ -28,6 +28,7 @@ Current chart version is `0.1.1`
 | clamavHTTP.image | string | `"quay.io/ukhomeofficedigital/acp-clamav-http"` | The clamav-http docker image |
 | clamavHTTP.resources | object | `{"limits":{"cpu":"400m","memory":"3000M"}}` | The resource requests and limits for the clamav-http service |
 | clamavHTTP.version | string | `""` | The clamav-http docker image version - defaults to .Chart.appVersion |
+| clamavNotify.freshclam.checkFrequency | int | `24` | The number of checks for new virus definitions per day |
 | clamavNotify.freshclam.mirrors | list | `["db.uk.clamav.net","database.clamav.net"]` | A list of clamav mirrors to be used by the clamav-notify service |
 | clamavNotify.image | string | `"quay.io/ukhomeofficedigital/acp-clamav-notify"` | The clamav-notify docker image |
 | clamavNotify.resources | object | `{"requests":{"cpu":"400m","memory":"1000M"}}` | The resource requests and limits for the clamav-http service |

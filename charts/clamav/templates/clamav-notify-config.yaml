@@ -4,7 +4,7 @@ metadata:
   name: {{ include "clamav.fullname" . }}-notify-config
 data:
   freshclam.conf: |
-    Checks 24
+    Checks {{ .Values.clamavNotify.freshclam.checkFrequency }}
     CompressLocalDatabase yes
     DatabaseOwner clam
     {{- range .Values.clamavNotify.freshclam.mirrors }}
