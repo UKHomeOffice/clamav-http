@@ -36,9 +36,9 @@ Current chart version is `0.1.1`
 | clamavNotify.volume.storageClass | string | `"gp2-encrypted"` | The storage class of the volume used by clamav-notify |
 | fullnameOverride | string | `""` | override the full name of the clamav chart |
 | nameOverride | string | `""` | override the name of the clamav chart |
-| nginxProxy.image | string | `"quay.io/ukhomeofficedigital/nginx-proxy"` | The nginx proxy docker image version |
+| nginxProxy.image | string | `"quay.io/ukhomeofficedigital/nginx-proxy"` | The nginx proxy docker image |
 | nginxProxy.resources | object | `{"limits":{"cpu":"200m","ephemeral-storage":"4Gi","memory":"400M"},"requests":{"ephemeral-storage":"2Gi"}}` | The resource requests and limits for the nginx proxy service |
-| nginxProxy.version | string | `"v3.4.20"` |  |
+| nginxProxy.version | string | `"v3.4.20"` | The nginx proxy docker image version |
 | service.ingress | list | `[{"podSelector":{}}]` | Specifies ingress rules for the clamav service |
 | service.port | int | `443` | The port to be used by the clamav service |
 | serviceAccount.annotations | object | `{}` | Annotaions for the service account used by clamav-notify |
