@@ -1,7 +1,9 @@
 #!/bin/bash
 
-touch /var/lib/clamav/index.htm
+touch /var/lib/clamav/
+
+LIGHTTPD_CONFIG="${LIGHTTPD_CONFIG:-lighttpd.conf}"
 
 freshclam -d
-lighttpd -t -f lighttpd.conf
-lighttpd -D -f lighttpd.conf
+lighttpd -t -f $LIGHTTPD_CONFIG
+lighttpd -D -f $LIGHTTPD_CONFIG

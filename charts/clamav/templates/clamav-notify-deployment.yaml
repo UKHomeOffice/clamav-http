@@ -34,11 +34,18 @@ spec:
           httpGet:
             path: /
             port: http
+        env:
+        - name: LIGHTTPD_CONFIG
+          value: /etc/config/lighttpd.conf
         volumeMounts:
         - name: clamav-notify-storage
           mountPath: /var/lib/clamav
         - name: config-volume
-          mountPath: /etc/clamav
+          mountPath: /etc/clamav/freshclam.conf
+          subPath: freshclam.conf
+        - name: config-volume
+          mountPath: /etc/config/lighttpd.conf
+          subPath: lighttpd.conf
       volumes:
       - name: clamav-notify-storage
         persistentVolumeClaim:

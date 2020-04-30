@@ -10,9 +10,13 @@ RUN apk add --no-cache bash wget shadow lighttpd \
 RUN adduser -S -g clamav -u 1000 clam \
     && chown -R clam:clamav /clam /var/log/clamav
 
-RUN pip install kubernetes
+COPY requirements.txt ./
+
+RUN pip install -r requirements.txt
 
 COPY notify.py start.sh lighttpd.conf ./
+
+COPY files/ ./files/
 
 USER 1000
 

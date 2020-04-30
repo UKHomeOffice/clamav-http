@@ -11,6 +11,18 @@ data:
     DatabaseMirror {{ . }}
     {{- end }}
     TestDatabases yes
-    OnUpdateExecute python /clam/notify.py {{ .Release.Namespace }} {{ include "clamav.fullname" . }}
+    OnUpdateExecute python /clam/notify.py -n {{ .Release.Namespace }} -d {{ include "clamav.fullname" . }} --test -f /var/lib/clamav -t /var/lib/clamav/mirror
     LogVerbose yes
     NotifyClamd no
+  lighttpd.conf: |
+    server.document-root = "/var/lib/clamav/mirror/" 
+
+    server.port = 8080
+
+    mimetype.assign = (
+      ".htm" => "text/html", 
+    )
+
+    dir-listing.activate = "enable" 
+    dir-listing.encoding = "utf-8"
+
