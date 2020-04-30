@@ -15,8 +15,10 @@ service:
   - podSelector: {}
 
 serviceAccount:
-  annotations: {}
+  # serviceAccount.name -- The name of the service account used by clamav-notify
   name: clamav-notify
+  # serviceAccount.annotations -- Annotaions for the service account used by clamav-notify
+  annotations: {}
 
 clamavNotify:
   # clamavNotify.image -- The clamav-notify docker image
@@ -29,12 +31,14 @@ clamavNotify:
       cpu: 400m
       memory: 1000M
   freshclam:
-    # clamavNotift.freshclam.mirrors -- A list of clamav mirrors to be used by the clamav-notify service
+    # clamavNotify.freshclam.mirrors -- A list of clamav mirrors to be used by the clamav-notify service
     mirrors:
       - db.uk.clamav.net
       - database.clamav.net
   volume:
+    # clamavNotify.volume.storageClass -- The storage class of the volume used by clamav-notify
     storageClass: gp2-encrypted
+    # clamavNotify.volume.size -- The size class of the volume used by clamav-notify in GB
     size: 5
 
 clamavHTTP:
@@ -49,7 +53,8 @@ clamavHTTP:
       memory: 3000M
 
 clamav:
-  image: quay.io/ukhomeofficedigital/acp-clamav # clamav.image -- The clamav docker image
+  # clamav.image -- The clamav docker image
+  image: quay.io/ukhomeofficedigital/acp-clamav 
   # clamav.version -- The clamav docker image version - defaults to .Chart.appVersion
   version: ""
   freshclam:
@@ -58,8 +63,11 @@ clamav:
       - db.uk.clamav.net
       - database.clamav.net
   certificate:
+    # clamav.certificate.create -- Should a certificate be created for the clamav service
     create: true
+    # clamav.certificate.secretName -- Override the default certificate secret name
     secretName: ""
+    # clamav.certificate.issue -- The issuer to use when creating a certificate
     issuer:
       name: platform-tls
       kind: ClusterIssuer
