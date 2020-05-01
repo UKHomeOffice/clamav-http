@@ -23,6 +23,4 @@ data:
       ".htm" => "text/html", 
     )
 
-    dir-listing.activate = "enable" 
-    dir-listing.encoding = "utf-8"
-
+    index-file.names = ( "index.htm" )

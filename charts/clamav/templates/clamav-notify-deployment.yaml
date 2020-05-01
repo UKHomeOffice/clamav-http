@@ -5,7 +5,9 @@ metadata:
   labels:
     {{- include "clamav.labels" . | nindent 4 }}
 spec:
-  replicas: {{ .Values.replicaCount }}
+  replicas: 1
+  strategy:
+    type: Recreate
   selector:
     matchLabels:
       name: {{ include "clamav.fullname" . }}-notify
@@ -23,20 +25,29 @@ spec:
         imagePullPolicy: Always
         resources: {{ toYaml .Values.clamavNotify.resources | nindent 10 }}
         ports:
-          - name: http
-            containerPort: 8080
-            protocol: TCP
+        - name: http
+          containerPort: 8080
+          protocol: TCP
         livenessProbe:
+          initialDelaySeconds: 300
+          periodSeconds: 2
+          failureThreshold: 5
           httpGet:
             path: /
             port: http
         readinessProbe:
+          initialDelaySeconds: 120
+          timeoutSeconds: 5
+          periodSeconds: 6
+          failureThreshold: 10
           httpGet:
             path: /
             port: http
         env:
         - name: LIGHTTPD_CONFIG
           value: /etc/config/lighttpd.conf
+        - name: LIGHTTPD_ROOT
+          value: /var/lib/clamav/mirror
         volumeMounts:
         - name: clamav-notify-storage
           mountPath: /var/lib/clamav
