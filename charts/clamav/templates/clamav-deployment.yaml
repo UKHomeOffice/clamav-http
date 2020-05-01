@@ -36,7 +36,7 @@ spec:
           protocol: TCP
         livenessProbe:
           httpGet:
-            path: /healthz
+            path: /v1alpha/healthz
             port: 8080
           initialDelaySeconds: 10
           timeoutSeconds: 5
@@ -44,7 +44,7 @@ spec:
           failureThreshold: 10
         readinessProbe:
           httpGet:
-            path: /healthz
+            path: /v1alpha/healthz
             port: 8080
           initialDelaySeconds: 10
           timeoutSeconds: 5

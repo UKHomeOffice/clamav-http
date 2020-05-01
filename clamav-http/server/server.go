@@ -32,6 +32,10 @@ func RunHTTPListener(clamd_address string, port int, max_file_mem int64, logger 
 		Max_file_mem: max_file_mem,
 		Logger:       logger,
 	})
+	m.Handle("/v1alpha/healthz", &v1alpha.HealthHandler{
+		Address: clamd_address,
+		Logger:  logger,
+	})
 	m.Handle("/v1alpha/scan", &v1alpha.ScanHandler{
 		Address:      clamd_address,
 		Max_file_mem: max_file_mem,
