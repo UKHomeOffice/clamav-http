@@ -35,6 +35,14 @@ spec:
           httpGet:
             path: /
             port: http
+        readinessProbe:
+          httpGet:
+            path: /bytecode.cvd
+            port: http
+          initialDelaySeconds: 60
+          timeoutSeconds: 10
+          periodSeconds: 15
+          failureThreshold: 5
         env:
         - name: LIGHTTPD_CONFIG
           value: /etc/config/lighttpd.conf
