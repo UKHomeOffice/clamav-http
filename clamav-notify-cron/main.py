@@ -1,11 +1,8 @@
 #!/usr/bin/env python
 
-import time
+import os
 
-from kubernetes import config
-from kubernetes.client import Configuration
-from kubernetes.client.apis import core_v1_api
-from kubernetes.client.rest import ApiException
+from kubernetes import client, config
 from kubernetes.stream import stream
 
 
@@ -15,23 +12,25 @@ else:
     config.load_kube_config()
 
 
-api = core_v1_api.CoreV1Api()
+api = client.CoreV1Api()
 
 label_selector = 'name=clamav-notify'
 namespace = 'clamav'
 
-resp = api.list_namespaced_pod(namespace=namespace, label_selector=label_selector)
+pods = api.list_namespaced_pod(namespace=namespace, label_selector=label_selector).items
 
-for x in resp.items:
-    resp = api.read_namespaced_pod(name=name, namespace=namespace)
+
+for pod in pods:
+    name = pod.metadata.name
 
     exec_command = [
-    '/bin/sh',
-    '-c',
-    'opt/zookeeper/bin/zkCleanup.sh -n 10'
+      "python", "/clam/notify.py",
+      "-f", "/var/lib/clamav",
+      "-t", "/var/lib/clamav/mirror",
+      "-n", "clamav", "-d", "clamav"
     ]
 
-    resp = stream(api.connect_get_namespaced_pod_exec, name, namespace,
+    response = stream(api.connect_get_namespaced_pod_exec, name, namespace,
               command=exec_command, stderr=True, stdin=False, stdout=True, tty=False)
 
-  print(resp)
+    print(response)
