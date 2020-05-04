@@ -16,6 +16,7 @@ spec:
       labels:
         name: {{ include "clamav.fullname" . }}-notify
     spec:
+      revisionHistoryLimit: 2
       serviceAccountName: {{ include "clamav.fullname" . }}-notify
       securityContext:
         fsGroup: 1000

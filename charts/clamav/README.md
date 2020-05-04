@@ -2,7 +2,7 @@ clamav
 ======
 A Helm chart for deploying a clamav-http service on kubernetes
 
-Current chart version is `0.1.1`
+Current chart version is `0.1.8`
 
 
 
@@ -32,9 +32,12 @@ Current chart version is `0.1.1`
 | clamavNotify.freshclam.mirrors | list | `["db.uk.clamav.net","database.clamav.net"]` | A list of clamav mirrors to be used by the clamav-notify service |
 | clamavNotify.image | string | `"quay.io/ukhomeofficedigital/acp-clamav-notify"` | The clamav-notify docker image |
 | clamavNotify.resources | object | `{"requests":{"cpu":"400m","memory":"1000M"}}` | The resource requests and limits for the clamav-http service |
-| clamavNotify.version | string | `""` | The clamav-notify docker image version - defaults to .Chart.appVersion |
+| clamavNotify.version | string | `""` | The clamav-notify-cron docker image version - defaults to .Chart.appVersion |
 | clamavNotify.volume.size | int | `5` | The size class of the volume used by clamav-notify in GB |
 | clamavNotify.volume.storageClass | string | `"gp2-encrypted"` | The storage class of the volume used by clamav-notify |
+| clamavNotifyCron.image | string | `"quay.io/ukhomeofficedigital/acp-clamav-notify"` | The clamav-notify-cron docker image |
+| clamavNotifyCron.schedule | string | `"*/15 * * * *"` | The cron schedule for loading updated signatures |
+| clamavNotifyCron.version | string | `""` |  |
 | fullnameOverride | string | `""` | override the full name of the clamav chart |
 | nameOverride | string | `""` | override the name of the clamav chart |
 | nginxProxy.image | string | `"quay.io/ukhomeofficedigital/nginx-proxy"` | The nginx proxy docker image |

@@ -2,6 +2,7 @@
 
 FRESHCLAM_ROOT="${FRESHCLAM_ROOT:-/var/lib/clamav}"
 FRESHCLAM_CONFIG="${FRESHCLAM_CONFIG:-/etc/clamav/freshclam.conf}"
+
 LIGHTTPD_ROOT="${LIGHTTPD_ROOT:-/var/lib/clamav}"
 LIGHTTPD_CONFIG="${LIGHTTPD_CONFIG:-lighttpd.conf}"
 

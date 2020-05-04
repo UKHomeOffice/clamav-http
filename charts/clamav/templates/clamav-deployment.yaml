@@ -5,6 +5,7 @@ metadata:
   labels:
     {{- include "clamav.labels" . | nindent 4 }}
 spec:
+  revisionHistoryLimit: 2
   replicas: {{ .Values.clamav.scaling.minReplicas }}
   selector:
     matchLabels:

@@ -54,6 +54,15 @@ clamavHTTP:
       cpu: 400m
       memory: 3000M
 
+clamavNotifyCron:
+  # clamavNotifyCron.image -- The clamav-notify-cron docker image
+  image: quay.io/ukhomeofficedigital/acp-clamav-notify
+  # clamavNotify.version -- The clamav-notify-cron docker image version - defaults to .Chart.appVersion
+  version: ""
+  # clamavNotifyCron.schedule -- The cron schedule for loading updated signatures
+  schedule:  "*/15 * * * *"
+
+
 clamav:
   # clamav.image -- The clamav docker image
   image: quay.io/ukhomeofficedigital/acp-clamav 
