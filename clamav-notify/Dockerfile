@@ -1,6 +1,6 @@
 FROM python:3-alpine
 
-ENV CLAM_VERSION=0.102.1-r0
+ENV CLAM_VERSION=0.102.2-r0
 
 WORKDIR /clam
 
