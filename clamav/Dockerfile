@@ -4,8 +4,10 @@ ENV CLAM_VERSION=0.102.2-r0
 
 WORKDIR /clam
 
-RUN apk add --no-cache bash wget shadow \ 
-  clamav=$CLAM_VERSION clamav-libunrar=$CLAM_VERSION
+RUN apk add --no-cache bash wget shadow
+
+RUN apk add clamav=$CLAM_VERSION clamav-libunrar=$CLAM_VERSION \
+    --repository=http://dl-cdn.alpinelinux.org/alpine/edge/main
 
 COPY start.sh .
 
