@@ -1,0 +1,7 @@
+kind: Service
+apiVersion: v1
+metadata:
+  name: {{ include "clamav.fullname" . }}-local-mirror
+spec:
+  type: ExternalName
+  externalName: db.{{ .Values.clamav.freshclam.region }}.clamav.net
