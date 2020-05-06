@@ -1,7 +1,0 @@
-kind: Service
-apiVersion: v1
-metadata:
-  name: {{ include "clamav.fullname" . }}-global-mirror
-spec:
-  type: ExternalName
-  externalName: database.clamav.net

@@ -103,7 +103,7 @@ spec:
       initContainers:
       - name: signatures
         image: "{{ .Values.clamav.image }}:{{ default .Chart.AppVersion .Values.clamav.version }}"
-        command: ['freshclam', '--stdout']
+        command: ['freshclam', '--stdout', '--no-dns']
         volumeMounts:
           - mountPath: /var/lib/clamav
             name: signatures
