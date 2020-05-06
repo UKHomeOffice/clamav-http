@@ -19,9 +19,9 @@ data:
     LogVerbose yes
     LogSyslog no
     DatabaseOwner clam
-    PrivateMirror http://{{ include "clamav.fullname" . }}-notify
-    {{- range .Values.clamav.freshclam.privateMirrors }}
-    PrivateMirror {{ . }}
+    DatabaseMirror http://{{ include "clamav.fullname" . }}-notify
+    {{- range .Values.clamav.freshclam.mirrors }}
+    DatabaseMirror {{ . }}
     {{- end }}
     Foreground yes
     NotifyClamd no

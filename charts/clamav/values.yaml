@@ -69,10 +69,10 @@ clamav:
   # clamav.version -- The clamav docker image version - defaults to .Chart.appVersion
   version: ""
   freshclam:
-    # clamav.freshclam.region
-    region: uk
-    # clamav.freshclam.privateMirrors -- A list of additional private clamav mirrors to be used by the clamav service
-    privateMirrors: []
+    # clamavNotify.freshclam.mirrors -- A list of clamav mirrors to be used by the clamav-notify service
+    mirrors:
+      - db.uk.clamav.net
+      - database.clamav.net
   certificate:
     # clamav.certificate.create -- Should a certificate be created for the clamav service
     create: true
