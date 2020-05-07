@@ -20,10 +20,7 @@ def main(namespace, deployment, pod ):
 
     api = client.CoreV1Api()
 
-    label_selector = 'name=clamav-notify'
-    namespace = 'clamav'
-
-    pods = api.list_namespaced_pod(namespace=namespace, label_selector=label_selector).items
+    pods = api.list_namespaced_pod(namespace=namespace, label_selector=f"name={pod}").items
 
 
     for pod in pods:
@@ -33,7 +30,7 @@ def main(namespace, deployment, pod ):
             "python", "/clam/notify.py",
             "-f", "/var/lib/clamav",
             "-t", "/var/lib/clamav/mirror",
-            "-n", "clamav", "-d", "clamav"
+            "-n", namespace, "-d", deployment
         ]
 
         response = stream(api.connect_get_namespaced_pod_exec, name, namespace,
