@@ -1,0 +1,22 @@
+apiVersion: batch/v1beta1
+kind: CronJob
+metadata:
+  name: {{ include "clamav.fullname" . }}-notify-cron
+spec:
+  schedule: "{{ .Values.clamavNotifyCron.schedule }}"
+  startingDeadlineSeconds: 120
+  successfulJobsHistoryLimit: 1
+  jobTemplate:
+    spec:
+      template:
+        spec:
+          serviceAccountName: {{ .Values.serviceAccount.name }}
+          containers:
+          - name: clamav-notify-cron
+            image: "{{ .Values.clamavNotifyCron.image }}:{{ default .Chart.AppVersion .Values.clamavNotifyCron.version }}"
+            args: [
+              "-n", "{{ .Release.Namespace }}",
+              "-d", "{{ include "clamav.fullname" . }}",
+              "-p", "{{ include "clamav.fullname" . }}-notify"
+            ]
+          restartPolicy: OnFailure
