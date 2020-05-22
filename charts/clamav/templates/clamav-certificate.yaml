@@ -1,13 +1,13 @@
 {{ if .Values.clamav.certificate.create }}
-apiVersion: certmanager.k8s.io/v1alpha2
+apiVersion: cert-manager.io/v1alpha2
 kind: Certificate
 metadata:
   name: {{ include "clamav.fullname" . }}-tls
 spec:
   secretName: {{ include "clamav.certsecretname" . }}
   issuerRef: {{ toYaml .Values.clamav.certificate.issuer | nindent 4 }}
-  commonName: {{ include "clamav.fullname" . }}.{{.Release.Namespace}}.svc.cluster.local
   dnsNames:
+  - {{ include "clamav.fullname" . }}.{{.Release.Namespace}}.svc.cluster.local
   - {{ include "clamav.fullname" . }}
   - {{ include "clamav.fullname" . }}.{{.Release.Namespace}}.svc
 {{ end }}
