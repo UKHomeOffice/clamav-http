@@ -63,6 +63,10 @@ def copy_signature(from_location, to_location):
 	if old_version != new_version:
 		click.echo(f"{to_location} is out of date, updating")
 		copyfile(from_location, to_location)
+		if to_location.endswith(".cld"):
+			old_file = to_location[:-4] + ".cvd"
+			if os.path.exists(old_file):
+				os.remove(old_file)
 	else:
 		click.echo(f"{to_location} is up to date")
 	return new_version
