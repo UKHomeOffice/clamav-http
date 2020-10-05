@@ -19,8 +19,7 @@ cat $LIGHTTPD_CONFIG
 mkdir -p $LIGHTTPD_ROOT
 touch "$LIGHTTPD_ROOT/index.htm"
 
+freshclam -d --config-file=$FRESHCLAM_CONFIG
 
 lighttpd -t -f $LIGHTTPD_CONFIG
-lighttpd -f $LIGHTTPD_CONFIG
-
-freshclam --config-file=$FRESHCLAM_CONFIG
+lighttpd -D -f $LIGHTTPD_CONFIG

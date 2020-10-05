@@ -77,7 +77,7 @@ def copy_signatures(from_location, to_location):
 		sys.exit(1)
 	click.echo("Latest virus definitions are working!")
 	for sigfile in os.listdir(from_location):
-		if not sigfile.endswith("cvd"):
+		if not sigfile.endswith(("cvd", "cld")):
 			continue
 		versions[sigfile] = copy_signature(
 			os.path.join(from_location, sigfile),
