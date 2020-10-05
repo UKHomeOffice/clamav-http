@@ -1,4 +1,4 @@
-FROM python:3-alpine
+FROM python:3-alpine3.11
 
 ENV CLAM_VERSION=0.102.3-r0
 
