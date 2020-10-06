@@ -62,8 +62,7 @@ def copy_signature(from_location, to_location):
 		old_version = sigtool(to_location)['Version']
 	if old_version != new_version:
 		click.echo(f"{to_location} is out of date, updating")
-		new_location = to_location[:-4] + ".cvd"
-		copyfile(from_location, new_location)
+		copyfile(from_location, to_location)
 	else:
 		click.echo(f"{to_location} is up to date")
 	return new_version
@@ -78,12 +77,15 @@ def copy_signatures(from_location, to_location):
 		sys.exit(1)
 	click.echo("Latest virus definitions are working!")
 	for sigfile in os.listdir(from_location):
-		if not sigfile.endswith(("cvd", "cld")):
-			continue
-		versions[sigfile] = copy_signature(
-			os.path.join(from_location, sigfile),
-			os.path.join(to_location, sigfile)
-			)
+		if sigfile.endswith("cvd"):
+			versions[sigfile] = copy_signature(
+				os.path.join(from_location, sigfile),
+				os.path.join(to_location, sigfile)
+				)
+		elif sigfile.endswith("cld"):
+			# Freshhclam will replace the cvd with a clv file delete it, and freshclam will pull a cvd on the next run
+			click.echo(f"Deleting unwanted cld: {sigfile}")
+			os.remove(os.path.join(from_location, sigfile))
 	return versions
 
 
