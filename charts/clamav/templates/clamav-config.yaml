@@ -20,6 +20,7 @@ data:
     LogVerbose yes
     LogSyslog no
     DatabaseOwner clam
+    DatabaseCustomURL http://{{ include "clamav.fullname" . }}-notify/daily.cld
     DatabaseMirror http://{{ include "clamav.fullname" . }}-notify
     {{- range .Values.clamav.freshclam.mirrors }}
     DatabaseMirror {{ . }}
