@@ -10,4 +10,4 @@ spec:
   - ports:
     - protocol: TCP
       port: 10443
-  - from: {{ toYaml .Values.service.ingress | nindent 4 }}
+    from: {{ toYaml .Values.service.ingress | nindent 4 }}
