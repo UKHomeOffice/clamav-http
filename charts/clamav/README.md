@@ -43,7 +43,7 @@ Current chart version is `0.2.4`
 | nginxProxy.image | string | `"quay.io/ukhomeofficedigital/nginx-proxy"` | The nginx proxy docker image |
 | nginxProxy.resources | object | `{"limits":{"cpu":"1500m","ephemeral-storage":"1000M","memory":"3000M"},"requests":{"cpu":"1000m","ephemeral-storage":"500M","memory":"2000M"}}` | The resource requests and limits for the nginx proxy service |
 | nginxProxy.version | string | `"v3.4.20"` | The nginx proxy docker image version |
-| service.ingress | list | `[{"podSelector":{}}]` | Specifies ingress rules for the clamav service |
+| service.ingress | list | `[]` | Specifies ingress rules for the clamav service |
 | service.port | int | `443` | The port to be used by the clamav service |
 | serviceAccount.annotations | object | `{}` | Annotaions for the service account used by clamav-notify |
 | serviceAccount.create | bool | `true` | Should we create the service account and roles |

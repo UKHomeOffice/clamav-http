@@ -12,8 +12,7 @@ service:
   # service.port -- The port to be used by the clamav service
   port: 443
   # service.ingress -- Specifies ingress rules for the clamav service
-  ingress:
-  - podSelector: {}
+  ingress: []
 
 serviceAccount:
   # serviceAccount.create -- Should we create the service account and roles
