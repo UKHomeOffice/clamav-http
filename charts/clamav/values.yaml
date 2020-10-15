@@ -13,7 +13,6 @@ service:
   port: 443
   # service.ingress -- Specifies ingress rules for the clamav service
   ingress:
-  - podSelector: {}
 
 serviceAccount:
   # serviceAccount.create -- Should we create the service account and roles
