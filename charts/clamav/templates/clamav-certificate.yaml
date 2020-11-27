@@ -6,6 +6,7 @@ metadata:
 spec:
   secretName: {{ include "clamav.certsecretname" . }}
   issuerRef: {{ toYaml .Values.clamav.certificate.issuer | nindent 4 }}
+  commonName: {{ include "clamav.fullname" . }}.{{.Release.Namespace}}.svc.cluster.local
   dnsNames:
   - {{ include "clamav.fullname" . }}.{{.Release.Namespace}}.svc.cluster.local
   - {{ include "clamav.fullname" . }}
