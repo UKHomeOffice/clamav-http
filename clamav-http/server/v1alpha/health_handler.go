@@ -21,7 +21,7 @@ func (hh *HealthHandler) ServeHTTP(w http.ResponseWriter, r *http.Request) {
 
 	if err != nil {
 		w.WriteHeader(http.StatusInternalServerError)
-		w.Write([]byte("not okay"))
+		w.Write([]byte(err.Error()))
 	}
 
 	result := <-response

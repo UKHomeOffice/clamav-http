@@ -18,7 +18,7 @@ func (sh *ScanHandler) ServeHTTP(w http.ResponseWriter, r *http.Request) {
 
 	if err != nil {
 		w.WriteHeader(http.StatusInternalServerError)
-		w.Write([]byte("not okay"))
+		w.Write([]byte(err.Error()))
 		return
 	}
 
@@ -35,7 +35,7 @@ func (sh *ScanHandler) ServeHTTP(w http.ResponseWriter, r *http.Request) {
 
 	if err != nil {
 		w.WriteHeader(http.StatusInternalServerError)
-		w.Write([]byte("not okay"))
+		w.Write([]byte(err.Error()))
 		return
 	}
 
@@ -44,7 +44,7 @@ func (sh *ScanHandler) ServeHTTP(w http.ResponseWriter, r *http.Request) {
 
 	if err != nil {
 		w.WriteHeader(http.StatusInternalServerError)
-		w.Write([]byte("not okay"))
+		w.Write([]byte(err.Error()))
 		return
 	}
 
