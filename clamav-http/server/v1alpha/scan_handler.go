@@ -13,12 +13,20 @@ type ScanHandler struct {
 	Logger       *logrus.Logger
 }
 
+const (
+	scan_error_0 = iota
+	scan_error_1 = iota
+	scan_error_2 = iota
+)
+
+
 func (sh *ScanHandler) ServeHTTP(w http.ResponseWriter, r *http.Request) {
 	err := r.ParseMultipartForm(sh.Max_file_mem * 1024 * 1024)
 
 	if err != nil {
 		w.WriteHeader(http.StatusInternalServerError)
 		w.Write([]byte(err.Error()))
+		sh.Logger.Errorf("scan error %d: %s", scan_error_0, err.Error())
 		return
 	}
 
@@ -36,6 +44,7 @@ func (sh *ScanHandler) ServeHTTP(w http.ResponseWriter, r *http.Request) {
 	if err != nil {
 		w.WriteHeader(http.StatusInternalServerError)
 		w.Write([]byte(err.Error()))
+		sh.Logger.Errorf("scan error %d: %s", scan_error_1, err.Error())
 		return
 	}
 
@@ -45,6 +54,7 @@ func (sh *ScanHandler) ServeHTTP(w http.ResponseWriter, r *http.Request) {
 	if err != nil {
 		w.WriteHeader(http.StatusInternalServerError)
 		w.Write([]byte(err.Error()))
+		sh.Logger.Errorf("scan error %d: %s", scan_error_2, err.Error())
 		return
 	}
 
