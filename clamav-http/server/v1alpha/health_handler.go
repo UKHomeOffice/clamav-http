@@ -10,6 +10,11 @@ import (
 
 const eicar = "X5O!P%@AP[4\\PZX54(P^)7CC)7}$EICAR-STANDARD-ANTIVIRUS-TEST-FILE!$H+H*"
 
+const (
+	healthError0 = iota
+	healthError1 = iota
+)
+
 type HealthHandler struct {
 	Address string
 	Logger  *logrus.Logger
@@ -22,18 +27,18 @@ func (hh *HealthHandler) ServeHTTP(w http.ResponseWriter, r *http.Request) {
 	if err != nil {
 		w.WriteHeader(http.StatusInternalServerError)
 		w.Write([]byte(err.Error()))
+		hh.Logger.Errorf("healthcheck error %d: %s", healthError0, err.Error())
+		return
 	}
 
 	result := <-response
 	if result.Status == "FOUND" {
 		w.WriteHeader(http.StatusOK)
-		hh.Logger.Info("healthcheck: OK")
 		w.Write([]byte("healthcheck: OK\n"))
+		hh.Logger.Trace("healthcheck: OK")
 	} else {
 		w.WriteHeader(http.StatusInternalServerError)
-		hh.Logger.Info("healthcheck: ERROR")
 		w.Write([]byte("healthcheck: ERROR\n"))
+		hh.Logger.Errorf("healthcheck error %d: %s", healthError1, err.Error())
 	}
-
-	return
 }
