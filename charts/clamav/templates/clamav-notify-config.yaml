@@ -5,14 +5,13 @@ metadata:
 data:
   freshclam.conf: |
     Checks {{ .Values.clamavNotify.freshclam.checkFrequency }}
-    CompressLocalDatabase yes
     DatabaseOwner clam
     {{- range .Values.clamavNotify.freshclam.mirrors }}
     DatabaseMirror {{ . }}
     {{- end }}
     TestDatabases yes
     LogVerbose yes
-    NotifyClamd no
+    ScriptedUpdates no
   lighttpd.conf: |
     server.document-root = "/var/lib/clamav/mirror/"
 

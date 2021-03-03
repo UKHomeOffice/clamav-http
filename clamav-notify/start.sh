@@ -8,7 +8,7 @@ echo "Freshclam config: $FRESHCLAM_CONFIG"
 
 cat $FRESHCLAM_CONFIG
 
-LIGHTTPD_ROOT="${LIGHTTPD_ROOT:-/var/lib/clamav}"
+LIGHTTPD_ROOT="${LIGHTTPD_ROOT:-/var/lib/clamav/mirror}"
 LIGHTTPD_CONFIG="${LIGHTTPD_CONFIG:-lighttpd.conf}"
 
 echo "Lighttpd root: $LIGHTTPD_ROOT"

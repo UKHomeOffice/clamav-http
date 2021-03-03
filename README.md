@@ -36,3 +36,7 @@ Requires a service account with permissions to patch the main clamav-deployment
 clamav-notify-cron is responsible for triggering the image mirroring and updating functonality of clamav-notify
 
 Requires a servce account with permissions to exec into the clamav-notify image
+
+### clamav-prometheus-exporter
+
+A metrics endpoint for collecting stats from ClamAV service stats 

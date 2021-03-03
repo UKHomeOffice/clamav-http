@@ -21,7 +21,4 @@ data:
     LogSyslog no
     DatabaseOwner clam
     DatabaseMirror http://{{ include "clamav.fullname" . }}-notify
-    {{- range .Values.clamav.freshclam.mirrors }}
-    DatabaseMirror {{ . }}
-    {{- end }}
     Foreground yes

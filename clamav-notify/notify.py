@@ -77,15 +77,12 @@ def copy_signatures(from_location, to_location):
 		sys.exit(1)
 	click.echo("Latest virus definitions are working!")
 	for sigfile in os.listdir(from_location):
-		if sigfile.endswith("cvd"):
-			versions[sigfile] = copy_signature(
-				os.path.join(from_location, sigfile),
-				os.path.join(to_location, sigfile)
-				)
-		elif sigfile.endswith("cld"):
-			# Freshhclam will replace the cvd with a cld file delete it, and freshclam will pull a cvd on the next run
-			click.echo(f"Deleting unwanted cld: {sigfile}")
-			os.remove(os.path.join(from_location, sigfile))
+		if not sigfile.endswith("cvd"):
+			continue
+		versions[sigfile] = copy_signature(
+			os.path.join(from_location, sigfile),
+			os.path.join(to_location, sigfile)
+			)
 	return versions
 
 

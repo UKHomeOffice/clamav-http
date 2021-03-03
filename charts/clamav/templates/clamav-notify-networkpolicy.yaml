@@ -1,7 +1,7 @@
 apiVersion: networking.k8s.io/v1
 kind: NetworkPolicy
 metadata:
-  name: clamav-notify
+  name: {{ include "clamav.fullname" . }}-notify
 spec:
   podSelector:
     matchLabels:
@@ -14,3 +14,17 @@ spec:
     ports:
     - protocol: TCP
       port: 8080
+  # Needed to pull updates 
+  egress:
+  - to:
+    - ipBlock:
+        cidr: 0.0.0.0/0
+    ports:
+    - protocol: TCP 
+      port: 53
+    - protocol: UDP 
+      port: 53
+    - protocol: TCP 
+      port: 80
+    - protocol: TCP 
+      port: 443

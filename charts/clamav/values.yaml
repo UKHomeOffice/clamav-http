@@ -22,6 +22,21 @@ serviceAccount:
   # serviceAccount.annotations -- Annotaions for the service account used by clamav-notify
   annotations: {}
 
+metrics:
+  enabled: true
+  image: quay.io/ukhomeofficedigital/acp-clamav-prometheus-exporter
+  port: 9090
+  path: /metrics
+  version: ""
+  resources:
+    # The resource requests and limits for the prometheus exporter
+    requests:
+      cpu: 100m
+      memory: 100M
+    limits:
+      cpu: 500m
+      memory: 500M
+
 clamavNotify:
   # clamavNotify.image -- The clamav-notify docker image
   image: quay.io/ukhomeofficedigital/acp-clamav-notify
@@ -40,7 +55,6 @@ clamavNotify:
     checkFrequency: 24
     # clamavNotify.freshclam.mirrors -- A list of clamav mirrors to be used by the clamav-notify service
     mirrors:
-      - db.uk.clamav.net
       - database.clamav.net
   volume:
     # clamavNotify.volume.storageClass -- The storage class of the volume used by clamav-notify
@@ -80,7 +94,6 @@ clamav:
   freshclam:
     # clamav.freshclam.mirrors -- A list of clamav mirrors to be used by the clamav service
     mirrors:
-      - db.uk.clamav.net
       - database.clamav.net
   certificate:
     # clamav.certificate.create -- Should a certificate be created for the clamav service
