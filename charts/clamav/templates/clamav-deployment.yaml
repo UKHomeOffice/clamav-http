@@ -46,7 +46,7 @@ spec:
           httpGet:
             path: /metrics
             port: 9090
-          initialDelaySeconds: 10
+          initialDelaySeconds: 30
           timeoutSeconds: 5
           periodSeconds: 5
           failureThreshold: 10
@@ -54,7 +54,7 @@ spec:
           httpGet:
             path: /metrics
             port: 9090
-          initialDelaySeconds: 10
+          initialDelaySeconds: 30
           timeoutSeconds: 5
           periodSeconds: 5
           failureThreshold: 10
@@ -70,7 +70,7 @@ spec:
           httpGet:
             path: /v1alpha/healthz
             port: 8080
-          initialDelaySeconds: 10
+          initialDelaySeconds: 30
           timeoutSeconds: 5
           periodSeconds: 5
           failureThreshold: 10
@@ -78,7 +78,7 @@ spec:
           httpGet:
             path: /v1alpha/healthz
             port: 8080
-          initialDelaySeconds: 10
+          initialDelaySeconds: 30
           timeoutSeconds: 5
           periodSeconds: 5
           failureThreshold: 10
