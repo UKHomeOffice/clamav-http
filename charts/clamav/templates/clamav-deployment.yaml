@@ -41,15 +41,7 @@ spec:
         image: "{{ .Values.metrics.image }}:{{ default .Chart.AppVersion .Values.metrics.version }}"
         ports: 
         - containerPort: 9090
-          name: 
-        livenessProbe:
-          httpGet:
-            path: /metrics
-            port: 9090
-          initialDelaySeconds: 10
-          timeoutSeconds: 5
-          periodSeconds: 5
-          failureThreshold: 10
+          name: prometheus
         readinessProbe:
           httpGet:
             path: /metrics
@@ -138,7 +130,7 @@ spec:
         image: "{{ .Values.clamav.image }}:{{ default .Chart.AppVersion .Values.clamav.version }}"
         # --no-dns prevents failures when upstream mirrors are out of sync and allows us
         # to use locally tested signatures rather than untested upstream signatures
-        command: ['sleep', '60', '&&', freshclam', '--stdout', '--no-dns']
+        command: ['freshclam', '--stdout', '--no-dns']
         resources:
           requests:
             memory: 1000M
