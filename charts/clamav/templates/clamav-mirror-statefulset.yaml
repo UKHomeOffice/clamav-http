@@ -1,30 +1,28 @@
 apiVersion: apps/v1
-kind: Deployment
+kind: Statefulset
 metadata:
-  name: {{ include "clamav.fullname" . }}-notify
+  name: {{ include "clamav.fullname" . }}-mirror
   labels:
     {{- include "clamav.labels" . | nindent 4 }}
 spec:
-  revisionHistoryLimit: 1
-  replicas: 1
+  replicas: {{ .Values.clamavMirror.replicaCount }}
   strategy:
     type: Recreate
   selector:
     matchLabels:
-      name: {{ include "clamav.fullname" . }}-notify
+      name: {{ include "clamav.fullname" . }}-mirror
   template:
     metadata:
       labels:
-        name: {{ include "clamav.fullname" . }}-notify
+        name: {{ include "clamav.fullname" . }}-mirror
     spec:
-      serviceAccountName: {{ .Values.serviceAccount.name }}
       securityContext:
         fsGroup: 1000
       containers:
       - name: {{ .Chart.Name }}
-        image: "{{ .Values.clamavNotify.image }}:{{ default .Chart.AppVersion .Values.clamavNotify.version }}"
+        image: "{{ .Values.clamavMirror.image }}:{{ default .Chart.AppVersion .Values.clamavMirror.version }}"
         imagePullPolicy: Always
-        resources: {{ toYaml .Values.clamavNotify.resources | nindent 10 }}
+        resources: {{ toYaml .Values.clamavMirror.resources | nindent 10 }}
         ports:
         - name: http
           containerPort: 8080
@@ -48,10 +46,10 @@ spec:
         - name: LIGHTTPD_CONFIG
           value: /etc/config/lighttpd.conf
         - name: LIGHTTPD_ROOT
-          value: /var/lib/clamav/mirror
+          value: /home/clam/mirror
         volumeMounts:
-        - name: clamav-notify-storage
-          mountPath: /var/lib/clamav
+        - name: {{ include "clamav.fullname" . }}-mirror
+          mountPath: /home/clam
         - name: config-volume
           mountPath: /etc/clamav/freshclam.conf
           subPath: freshclam.conf
@@ -59,9 +57,16 @@ spec:
           mountPath: /etc/config/lighttpd.conf
           subPath: lighttpd.conf
       volumes:
-      - name: clamav-notify-storage
-        persistentVolumeClaim:
-          claimName: {{ include "clamav.fullname" . }}-notify
       - name: config-volume
         configMap:
-          name: {{ include "clamav.fullname" . }}-notify-config
+          name: {{ include "clamav.fullname" . }}-mirror-config
+  volumeClaimTemplates:
+  - metadata:
+      name: {{ include "clamav.fullname" . }}-mirror
+    spec:
+      storageClassName: {{ .Values.clamavMirror.volume.storageClass }}
+      accessModes:
+        - ReadWriteOnce
+      resources:
+        requests:
+          storage: {{ .Values.clamavMirror.volume.size }}Gi

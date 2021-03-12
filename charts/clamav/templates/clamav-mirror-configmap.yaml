@@ -3,15 +3,12 @@ kind: ConfigMap
 metadata:
   name: {{ include "clamav.fullname" . }}-notify-config
 data:
-  freshclam.conf: |
-    Checks {{ .Values.clamavNotify.freshclam.checkFrequency }}
+  freshclam.conf: |    
     DatabaseOwner clam
-    {{- range .Values.clamavNotify.freshclam.mirrors }}
-    DatabaseMirror {{ . }}
-    {{- end }}
+    DatabaseMirror http://localhost:8000
     TestDatabases yes
     LogVerbose yes
-    ScriptedUpdates no
+
   lighttpd.conf: |
     server.document-root = "/var/lib/clamav/mirror/"
 
