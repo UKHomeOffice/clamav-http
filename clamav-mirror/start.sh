@@ -1,66 +1,83 @@
 #!/bin/bash
 # 
-# Starts AV mirror and seeds with latest definitions if they dont already exist
+# Wrapper script that keeps Webserver and AV mirror up to date
 
 set -o errexit
 
-FRESHCLAM_ROOT="${FRESHCLAM_ROOT:-/var/lib/clamav}"
+CVDUPDATE_DEST="${CVDUPDATE_DEST:-/home/clam/db}"
+LIGHTTPD_ROOT="${LIGHTTPD_ROOT:-/home/clam/mirror}"
+LIGHTTPD_HOST_CONFIG="${LIGHTTPD_HOST_CONFIG:-mirrorhost.conf}"
+LIGHTTPD_TEST_CONFIG="${LIGHTTPD_TEST_CONFIG:-mirrortest.conf}"
 FRESHCLAM_CONFIG="${FRESHCLAM_CONFIG:-/etc/clamav/freshclam.conf}"
-LIGHTTPD_ROOT="${LIGHTTPD_ROOT:-/var/lib/clamav/mirror}"
-LIGHTTPD_CONFIG="${LIGHTTPD_CONFIG:-lighttpd.conf}"
-
+PROMETHEUS_METRIC_LISTEN_PORT="${PROMETHEUS_METRIC_LISTEN_PORT:-9090}"
 
 function err() {
   echo "[$(date +'%Y-%m-%dT%H:%M:%S%z')]: $@" >&2
 }
-
 
 function log() {
   echo "[$(date +'%Y-%m-%dT%H:%M:%S%z')]: $@"
 }
 
 
-function showconfig() {
-  log "Freshclam root: $FRESHCLAM_ROOT"
-  log "Freshclam config: $FRESHCLAM_CONFIG"
-  log "Lighttpd root: $LIGHTTPD_ROOT"
-  log "Lighttpd config: $LIGHTTPD_CONFIG"
-  cat $LIGHTTPD_CONFIG
-  cat $FRESHCLAM_CONFIG
-}
-
-
 ##############################################
-# Create directories to host mirror, copy over
-# defs if applicable and start daemon.
 # Globals:
 #   LIGHTHTTPD_ROOT
-#   FRESHCLAM_ROOT
-#   FRESHCLAM_CONFIG 
-#   FRESHCLAM_ROOT
 # Arguments:
 #   None
 # Outputs:
-#   Writes log to stdout
+#   Writes update log to ~/.cvdupdate
 ##############################################
-function startmirror() {
+function setup() {
   mkdir -p $LIGHTTPD_ROOT
-  touch "$LIGHTTPD_ROOT/index.htm"
-  # Run freshclam in foreground once to get latest defs on container start
-  freshclam --config-file=$FRESHCLAM_CONFIG --stdout
-  # If no defs exist in mirror, copy them
-  yes n | cp -i $FRESHCLAM_ROOT/*.cvd $LIGHTTPD_ROOT 2>/dev/null
-  # Set freshclam to run in background
-  freshclam -d --config-file=$FRESHCLAM_CONFIG
-  # Start http server
-  lighttpd -t -f $LIGHTTPD_CONFIG
-  lighttpd -D -f $LIGHTTPD_CONFIG
+  mkdir -p $CVDUPDATE_DEST
+  cvd config set --dbdir $CVDUPDATE_DEST
+  cvd config show
+  # If this fails dont exit as it could be network releated we still want to keep 
+  # the mirror up
+  if ! cvd update -V 
+    then
+      err "ERROR CVD update failed, continue"
+  fi
+  # Perform an initial rsync if mirror is empty
+  if [ -z "$(ls $LIGHTTPD_ROOT)" ]; then
+    log "INFO Sync mirror"
+    rsync -av --checksum $CVDUPDATE_DEST/* $LIGHTTPD_ROOT/
+  else
+    log "INFO Mirror present"
+  fi
 }
+
+##############################################
+# Start webserver
+# Globals:
+#   LIGHTTPD_CONFIG
+# Arguments:
+#   configfile
+# Outputs:
+#   Writes update log to /var/lib/clamav
+##############################################
+function lighttpdrun() {
+  local configfile="$1"
+  # Start http server
+  log "INFO Starting lighthttpd"
+  lighttpd -D -f $configfile
+}
+
+function supercronstart() {
+  log "INFO Starting supercronic"
+  supercronic -passthrough-logs -prometheus-listen-address localhost:$PROMETHEUS_METRIC_LISTEN_PORT crontab 
+} 
 
 
 function main() {
-  showconfig
-  startmirror
+  setup
+  lighttpdrun $LIGHTTPD_HOST_CONFIG &
+  lighttpdrun $LIGHTTPD_TEST_CONFIG &
+  supercronstart
 }
 
+
 main "@"
+
+
