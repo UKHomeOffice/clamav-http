@@ -44,10 +44,12 @@ clamavMirror:
     limits:
       cpu: 800m
       memory: 2000M
+  cvdUpdate:
+    # cvdUpdate.cvdCron -- DNS based check to update the local database, only new are files download
+    cvdCron: "*/10 * * * *"
+    # cvdUpdate.MirrorCron -- Frequency to rsync changes to mirror - to every hour   
+    mirrorCron: "0 * * * *"
 
-  cvdupdate:
-    # clamavMirror.checkInterval -- Time between signature database update checks 
-    checkInterval: 20m
     
   volume:
     # clamavmirror.volume.storageClass -- The storage class of the volume used by clamav-mirror
