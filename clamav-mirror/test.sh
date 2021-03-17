@@ -52,7 +52,7 @@ function testfreshclam() {
 ##############################################
 function publishsigs() {
   log "INFO Self test PASS: Publishing signatures to mirror"
-  if ! rsync -av --checksum $CVDUPDATE_DEST/* $LIGHTTPD_ROOT/
+  if ! rsync -av --checksum --delete $CVDUPDATE_DEST/ $LIGHTTPD_ROOT/
     then
       err "ERROR: Unable to sync mirror"
       exit
@@ -83,7 +83,8 @@ function scantest() {
 }
 
 ##############################################
-# Run freshclam a few times in defferent ways
+# Test freshclam updates in defferent ways
+# Use for testing only 
 # Globals:
 #   none
 # Locals:
@@ -106,11 +107,20 @@ function soaktest() {
   teardown
 }
 
+##############################################
+# In operation, run a freshclam from local
+# freshclam db is not on a PVC
+# Globals:
+#   none
+# Locals:
+#   None
+# Outputs:
+#   Writes log to stdout
+##############################################
 function main() {
-  teardown
+  testfreshclam
   scantest --quiet
   publishsigs
-  teardown
 }
 
 main "@"

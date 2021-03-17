@@ -6,8 +6,8 @@ set -o errexit
 
 CVDUPDATE_DEST="${CVDUPDATE_DEST:-/home/clam/db}"
 LIGHTTPD_ROOT="${LIGHTTPD_ROOT:-/home/clam/mirror}"
-LIGHTTPD_HOST_CONFIG="${LIGHTTPD_HOST_CONFIG:-mirrorhost.conf}"
-LIGHTTPD_TEST_CONFIG="${LIGHTTPD_TEST_CONFIG:-mirrortest.conf}"
+LIGHTTPD_HOST_CONFIG="${LIGHTTPD_HOST_CONFIG:-lighttpdhost.conf}"
+LIGHTTPD_TEST_CONFIG="${LIGHTTPD_TEST_CONFIG:-lighttpdmirror.conf}"
 FRESHCLAM_CONFIG="${FRESHCLAM_CONFIG:-/etc/clamav/freshclam.conf}"
 PROMETHEUS_METRIC_LISTEN_PORT="${PROMETHEUS_METRIC_LISTEN_PORT:-9090}"
 
@@ -42,7 +42,7 @@ function setup() {
   # Perform an initial rsync if mirror is empty
   if [ -z "$(ls $LIGHTTPD_ROOT)" ]; then
     log "INFO Sync mirror"
-    rsync -av --checksum $CVDUPDATE_DEST/* $LIGHTTPD_ROOT/
+    rsync -av --checksum --delete $CVDUPDATE_DEST/ $LIGHTTPD_ROOT/
   else
     log "INFO Mirror present"
   fi
@@ -66,7 +66,7 @@ function lighttpdrun() {
 
 function supercronstart() {
   log "INFO Starting supercronic"
-  supercronic -passthrough-logs -prometheus-listen-address localhost:$PROMETHEUS_METRIC_LISTEN_PORT crontab 
+  supercronic -passthrough-logs -prometheus-listen-address localhost:$PROMETHEUS_METRIC_LISTEN_PORT cvdmirror.crontab 
 } 
 
 

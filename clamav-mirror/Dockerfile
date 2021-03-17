@@ -25,10 +25,10 @@ COPY requirements.txt ./
 
 RUN pip install -r requirements.txt
 
-COPY start.sh mirrorhost.conf mirrortest.conf test.sh ./
+COPY start.sh lighttpdhost.conf lighttpdmirror.conf test.sh ./
 COPY freshclam.conf /etc/clamav/freshclam.conf
 RUN chown clam:clamav /etc/clamav/freshclam.conf
-COPY crontab .
+COPY cvdmirror.crontab .
 COPY files/ ./files/
 RUN chown -R clam:clamav /clam \
   && chmod +x start.sh test.sh
