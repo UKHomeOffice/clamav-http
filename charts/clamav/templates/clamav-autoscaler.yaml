@@ -1,4 +1,4 @@
-apiVersion: autoscaling/v2beta1
+apiVersion: autoscaling/v2beta2
 kind: HorizontalPodAutoscaler
 metadata:
   name: {{ include "clamav.fullname" . }}
@@ -13,8 +13,10 @@ spec:
   - type: Resource
     resource:
       name: cpu
-      targetAverageUtilization: {{ .Values.clamav.scaling.cpuTarget }}
-  - type: Resource
-    resource:
-      name: memory
-      targetAverageUtilization: {{ .Values.clamav.scaling.memoryTarget }}
+      target:
+        type: Utilization
+        averageUtilization: {{ .Values.clamav.scaling.cpuTarget }}
+  # - type: Resource
+  #   resource:
+  #     name: memory
+  #     targetAverageUtilization: {{ .Values.clamav.scaling.memoryTarget }}

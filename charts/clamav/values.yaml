@@ -49,13 +49,12 @@ clamavMirror:
     cvdCron: "*/10 * * * *"
     # cvdUpdate.MirrorCron -- Frequency to rsync changes to mirror - to every hour   
     mirrorCron: "0 * * * *"
-
-    
+  metricsPort: 9090
   volume:
     # clamavmirror.volume.storageClass -- The storage class of the volume used by clamav-mirror
     storageClass: gp2-encrypted
     # clamavmirror.volume.size -- The size class of the volume used by clamav-mirror in GB
-    size: 5
+    size: 10
 
 clamavHTTP:
   # clamavHTTP.image -- The clamav-http docker image
@@ -72,7 +71,6 @@ clamavHTTP:
       cpu: 1500m
       memory: 3000M
       ephemeral-storage: "1000M"
-
 
 clamav:
   # clamav.image -- The clamav docker image

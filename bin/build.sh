@@ -1,5 +1,5 @@
 #!/bin/sh
-
+set -o errexit
 
 docker login -u="ukhomeofficedigital+acp_clamav" -p=${DOCKER_PASSWORD} quay.io
 

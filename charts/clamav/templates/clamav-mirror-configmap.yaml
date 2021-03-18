@@ -1,29 +1,33 @@
 apiVersion: v1
 kind: ConfigMap
 metadata:
-  name: {{ include "clamav.fullname" . }}-notify-config
+  name: {{ include "clamav.fullname" . }}-mirror-config
 data:
-  cdvmirror.crontab: |
+  cvdmirror.crontab: |
     #Keep local definitions up to date 
     {{.Values.clamavMirror.cvdUpdate.cvdCron}} cvd update -V
     #Test and publish signatures
     {{.Values.clamavMirror.cvdUpdate.mirrorCron}} ./test.sh
+
   freshclam.conf: |    
     DatabaseOwner clam
     DatabaseMirror http://localhost:8001
     TestDatabases yes
     LogVerbose yes
+
   lighttpdhost.conf: |
-    server.document-root = "/home/clam/mirror/"
+    server.document-root = "/home/clam/db/"
     server.port = 8081
     mimetype.assign = (
       ".htm" => "text/html", 
     )
     index-file.names = ( "index.htm" )
+
   lightttpdmirror.conf: |
-    server.document-root = "/home/clam/db/"
+    server.document-root = "/home/clam/mirror/"
     server.port = 8080
     mimetype.assign = (
       ".htm" => "text/html", 
     )
     index-file.names = ( "index.htm" )
+    
