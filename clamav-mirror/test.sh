@@ -109,7 +109,7 @@ function soaktest() {
 
 ##############################################
 # In operation, run a freshclam from local
-# freshclam db is not on a PVC
+# freshclam's local db is not on a PVC
 # Globals:
 #   none
 # Locals:
@@ -118,7 +118,7 @@ function soaktest() {
 #   Writes log to stdout
 ##############################################
 function main() {
-  testfreshclam
+  testfreshclam --no-dns
   scantest --quiet
   publishsigs
 }

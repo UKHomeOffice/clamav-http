@@ -4,7 +4,7 @@ ENV CLAM_VERSION=0.103.1-r0
 
 WORKDIR /clam
 
-RUN apk add --update-cache bash wget shadow \
+RUN apk add --update-cache bash wget curl shadow \
     clamav=$CLAM_VERSION clamav-libunrar=$CLAM_VERSION
 
 COPY start.sh .

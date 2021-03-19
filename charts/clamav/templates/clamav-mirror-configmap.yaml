@@ -11,7 +11,7 @@ data:
 
   freshclam.conf: |    
     DatabaseOwner clam
-    DatabaseMirror http://localhost:8001
+    DatabaseMirror http://localhost:8081
     TestDatabases yes
     LogVerbose yes
 

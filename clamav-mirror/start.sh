@@ -46,6 +46,15 @@ function setup() {
   else
     log "INFO Mirror present"
   fi
+  # Setup server root for livenets/readiness probes
+  if [[ ! -e $CVDUPDATE_DEST/index.htm ]]
+    then
+      touch $CVDUPDATE_DEST/index.htm
+  fi
+  if [[ ! -e $LIGHTTPD_ROOT/index.htm ]]
+    then
+      touch $LIGHTTPD_ROOT/index.htm
+  fi
 }
 
 ##############################################
