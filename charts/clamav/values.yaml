@@ -34,7 +34,7 @@ clamavMirror:
   replicaCount: 1
   # clamavMirror.image -- The clamav-mirror docker image
   image: quay.io/ukhomeofficedigital/acp-clamav-mirror
-  # clamavMirror.version -- The clamav-mirror docker image version - defaults to .Chart.appVersion
+  #  clamavMirror.version -- The clamav-mirror docker image version - defaults to .Chart.appVersion
   version: ""
   # clamavMirror.resources -- The resource requests and limits for the clamav-http service
   resources:   
@@ -104,6 +104,15 @@ clamav:
     fileSize: 20
     # clamav.limits.scanSize -- The largest scan size permitted in clamav, in MB
     scanSize: 100
+    # clamav.limits.connectionQueueLength -- Maximum length the queue of pending connections may grow to
+    connectionQueueLength: 200
+    # clamav.limits.maxThreads --Maximum number of threads running at the same time.
+    maxThreads: 10
+    # clamav.sendBufTimeout -- This option specifies how long to wait (in milliseconds) if the send buffer is full 
+    # keep this value low to prevent clamd hanging
+    sendBufTimeout: 500
+
+
   resources:
     # clamav.resources -- The resource requests and limits for the clamav service
     requests:

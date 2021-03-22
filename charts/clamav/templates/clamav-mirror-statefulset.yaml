@@ -41,12 +41,12 @@ spec:
           httpGet:
             path: /bytecode.cvd
             port: http
-          initialDelaySeconds: 60
+          initialDelaySeconds: 20
           timeoutSeconds: 10
           periodSeconds: 15
           failureThreshold: 5
         volumeMounts:
-        - name: {{ include "clamav.fullname" . }}-mirror
+        - name: data
           mountPath: /home/clam
         - name: config-volume
           mountPath: /clam/cvdmirror.crontab
@@ -66,7 +66,7 @@ spec:
           name: {{ include "clamav.fullname" . }}-mirror-config
   volumeClaimTemplates:
   - metadata:
-      name: {{ include "clamav.fullname" . }}-mirror
+      name: data
     spec:
       storageClassName: {{ .Values.clamavMirror.volume.storageClass }}
       accessModes:

@@ -22,18 +22,18 @@ data:
 
     # Maximum length the queue of pending connections may grow to.
     # Default: 200
-    #MaxConnectionQueueLength 30
+    MaxConnectionQueueLength {{.Values.clamav.limits.connectionQueueLength}}
 
     # Maximum number of threads running at the same time.
     # Default: 10
-    #MaxThreads 20
+    MaxThreads {{.Values.clamav.limits.maxThreads}}
 
     # This option specifies how long to wait (in milliseconds) if the send buffer
     # is full.
     # Keep this value low to prevent clamd hanging.
     #
     # Default: 500
-    #SendBufTimeout 200
+    SendBufTimeout {{.Values.clamav.limits.sendBufTimeout}}
 
   freshclam.conf: |
     LogTime yes
