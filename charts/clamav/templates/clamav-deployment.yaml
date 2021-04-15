@@ -15,12 +15,6 @@ spec:
       labels:
         name: {{ include "clamav.fullname" . }}
       annotations:
-        {{- if .Values.metrics.enabled }}
-        prometheus.io/scrape: "true"
-        prometheus.io/port: {{ .Values.metrics.port | quote }}
-        prometheus.io/scheme: "http"
-        prometheus.io/path: {{ .Values.metrics.path | quote }}
-        {{- end }}
     spec:
       containers:
       - name: clamav
@@ -36,22 +30,6 @@ spec:
             name: signatures
           - mountPath: /etc/clamav
             name: config-volume
-      {{- if .Values.metrics.enabled }}
-      - name: clamav-prometheus-exporter
-        image: "{{ .Values.metrics.image }}:{{ default .Chart.AppVersion .Values.metrics.version }}"
-        ports: 
-        - containerPort: 9090
-          name: prometheus
-        readinessProbe:
-          httpGet:
-            path: /metrics
-            port: 9090
-          initialDelaySeconds: 10
-          timeoutSeconds: 5
-          periodSeconds: 5
-          failureThreshold: 10
-        resources: {{ toYaml .Values.metrics.resources | nindent 10 }}
-      {{- end }}
       - name: clamav-http
         image: "{{ .Values.clamavHTTP.image }}:{{ default .Chart.AppVersion .Values.clamavHTTP.version }}"
         ports:

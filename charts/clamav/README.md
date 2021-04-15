@@ -4,8 +4,6 @@ A Helm chart for deploying a clamav-http service on kubernetes
 
 Current chart version is `0.3.0`
 
-
-
 ## Chart Values
 
 ## Values
@@ -25,7 +23,6 @@ Current chart version is `0.3.0`
 | clamav.resources | object | `{"limits":{"cpu":"1500m","ephemeral-storage":"1000M","memory":"3000M"},"requests":{"cpu":"1000m","ephemeral-storage":"500M","memory":"2000M"}}` | The resource requests and limits for the clamav service |
 | clamav.scaling.cpuTarget | int | `30` | The target cpu usage percentage for clamav |
 | clamav.scaling.maxReplicas | int | `20` | The maximum number of clamav replicas |
-| clamav.scaling.memoryTarget | int | `30` | The target memory usage percentage for clamav |
 | clamav.scaling.minReplicas | int | `2` | The minumum number of clamav replicas |
 | clamav.version | string | `""` | The clamav docker image version - defaults to .Chart.appVersion |
 | clamavHTTP.image | string | `"quay.io/ukhomeofficedigital/acp-clamav-http"` | The clamav-http docker image |
@@ -41,18 +38,8 @@ Current chart version is `0.3.0`
 | clamavMirror.volume.size | int | `10` |  |
 | clamavMirror.volume.storageClass | string | `"gp2-encrypted"` |  |
 | fullnameOverride | string | `""` | override the full name of the clamav chart |
-| metrics.enabled | bool | `false` |  |
-| metrics.image | string | `"quay.io/ukhomeofficedigital/acp-clamav-prometheus-exporter"` |  |
-| metrics.path | string | `"/metrics"` |  |
-| metrics.port | int | `9090` |  |
-| metrics.resources.limits.cpu | string | `"500m"` |  |
-| metrics.resources.limits.memory | string | `"500M"` |  |
-| metrics.resources.requests.cpu | string | `"100m"` |  |
-| metrics.resources.requests.memory | string | `"100M"` |  |
-| metrics.version | string | `""` |  |
 | nameOverride | string | `""` | override the name of the clamav chart |
 | nginxProxy.image | string | `"quay.io/ukhomeofficedigital/nginx-proxy"` | The nginx proxy docker image |
 | nginxProxy.resources | object | `{"limits":{"cpu":"1500m","ephemeral-storage":"1000M","memory":"3000M"},"requests":{"cpu":"1000m","ephemeral-storage":"500M","memory":"2000M"}}` | The resource requests and limits for the nginx proxy service |
 | nginxProxy.version | string | `"v3.4.20"` | The nginx proxy docker image version |
-| service.ingress | string | `nil` | Specifies ingress rules for the clamav service |
 | service.port | int | `443` | The port to be used by the clamav service |

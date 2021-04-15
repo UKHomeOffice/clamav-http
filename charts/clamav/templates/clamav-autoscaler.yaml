@@ -16,7 +16,3 @@ spec:
       target:
         type: Utilization
         averageUtilization: {{ .Values.clamav.scaling.cpuTarget }}
-  # - type: Resource
-  #   resource:
-  #     name: memory
-  #     targetAverageUtilization: {{ .Values.clamav.scaling.memoryTarget }}

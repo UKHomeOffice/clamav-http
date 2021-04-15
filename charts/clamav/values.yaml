@@ -11,24 +11,6 @@ fullnameOverride: ""
 service:
   # service.port -- The port to be used by the clamav service
   port: 443
-  # service.ingress -- Specifies ingress rules for the clamav service
-  ingress:
-
-# Experimental, crashes under load
-metrics:
-  enabled: false
-  image: quay.io/ukhomeofficedigital/acp-clamav-prometheus-exporter
-  port: 9090
-  path: /metrics
-  version: ""
-  resources:
-    # The resource requests and limits for the prometheus exporter
-    requests:
-      cpu: 100m
-      memory: 100M
-    limits:
-      cpu: 500m
-      memory: 500M
 
 clamavMirror:
   replicaCount: 1
@@ -45,9 +27,9 @@ clamavMirror:
       cpu: 800m
       memory: 2000M
   cvdUpdate:
-    # cvdUpdate.cvdCron -- DNS based check to update the local database, only new are files download
+    # clamavmirror.cvdUpdate.cvdCron -- DNS based check to update the local database, only new are files download
     cvdCron: "*/10 * * * *"
-    # cvdUpdate.MirrorCron -- Frequency to rsync changes to mirror - to every hour   
+    # clamavmirror.cvdUpdate.MirrorCron -- Frequency to rsync changes to mirror - defaults to every hour   
     mirrorCron: "0 * * * *"
   metricsPort: 9090
   volume:
@@ -97,8 +79,6 @@ clamav:
     maxReplicas: 20
     # clamav.scaling.cpuTarget -- The target cpu usage percentage for clamav
     cpuTarget: 30
-    # clamav.scaling.memoryTarget -- The target memory usage percentage for clamav
-    memoryTarget: 30
   limits:
     # clamav.limits.fileSize -- The largest file size scanable by clamav, in MB
     fileSize: 20
@@ -108,8 +88,7 @@ clamav:
     connectionQueueLength: 200
     # clamav.limits.maxThreads --Maximum number of threads running at the same time.
     maxThreads: 10
-    # clamav.sendBufTimeout -- This option specifies how long to wait (in milliseconds) if the send buffer is full 
-    # keep this value low to prevent clamd hanging
+    # clamav.sendBufTimeout -- This option specifies how long to wait (in milliseconds) if the send buffer is full, keep low to avoid clamd hanging
     sendBufTimeout: 500
 
 
