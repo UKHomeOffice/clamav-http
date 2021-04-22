@@ -1,0 +1,30 @@
+apiVersion: networking.k8s.io/v1
+kind: NetworkPolicy
+metadata:
+  name: {{ include "clamav.fullname" . }}-mirror
+spec:
+  podSelector:
+    matchLabels:
+      name: {{ include "clamav.fullname" . }}-mirror
+  ingress:
+  - from:
+    - podSelector:
+        matchLabels:
+          name: {{ include "clamav.fullname" . }}
+    ports:
+    - protocol: TCP
+      port: 8080
+  # Needed to pull updates 
+  egress:
+  - to:
+    - ipBlock:
+        cidr: 0.0.0.0/0
+    ports:
+    - protocol: TCP 
+      port: 53
+    - protocol: UDP 
+      port: 53
+    - protocol: TCP 
+      port: 80
+    - protocol: TCP 
+      port: 443

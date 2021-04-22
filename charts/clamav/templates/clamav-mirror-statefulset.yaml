@@ -1,0 +1,76 @@
+apiVersion: apps/v1
+kind: StatefulSet
+metadata:
+  name: {{ include "clamav.fullname" . }}-mirror
+  labels:
+    {{- include "clamav.labels" . | nindent 4 }}
+spec:
+  replicas: {{ .Values.clamavMirror.replicaCount }}
+  selector:
+    matchLabels:
+      name: {{ include "clamav.fullname" . }}-mirror
+  serviceName: {{ include "clamav.fullname" . }}-mirror
+  template:
+    metadata:
+      labels:
+        name: {{ include "clamav.fullname" . }}-mirror
+      annotations:
+        checksum/config: {{ include (print $.Template.BasePath "/clamav-mirror-configmap.yaml") . | sha256sum }}
+        prometheus.io/scrape: "true"
+        prometheus.io/port: {{ .Values.clamavMirror.metricsPort | quote }}
+    spec:
+      securityContext:
+        fsGroup: 1000
+      containers:
+      - name: {{ .Chart.Name }}
+        image: "{{ .Values.clamavMirror.image }}:{{ default .Chart.AppVersion .Values.clamavMirror.version }}"
+        imagePullPolicy: Always
+        resources: {{ toYaml .Values.clamavMirror.resources | nindent 10 }}
+        ports:
+        - name: http
+          containerPort: 8080
+          protocol: TCP
+        livenessProbe:
+          initialDelaySeconds: 20
+          periodSeconds: 5
+          failureThreshold: 3
+          httpGet:
+            path: /
+            port: http
+        readinessProbe:
+          httpGet:
+            path: /bytecode.cvd
+            port: http
+          initialDelaySeconds: 20
+          timeoutSeconds: 10
+          periodSeconds: 15
+          failureThreshold: 5
+        volumeMounts:
+        - name: data
+          mountPath: /home/clam
+        - name: config-volume
+          mountPath: /clam/cvdmirror.crontab
+          subPath: cvdmirror.crontab
+        - name: config-volume
+          mountPath: /etc/clamav/freshclam.conf
+          subPath: freshclam.conf
+        - name: config-volume
+          mountPath: /clam/lighttpdhost.conf
+          subPath: lighttpdhost.conf
+        - name: config-volume
+          mountPath: /clam/lightttpdmirror.conf
+          subPath: lightttpdmirror.conf
+      volumes:
+      - name: config-volume
+        configMap:
+          name: {{ include "clamav.fullname" . }}-mirror-config
+  volumeClaimTemplates:
+  - metadata:
+      name: data
+    spec:
+      storageClassName: {{ .Values.clamavMirror.volume.storageClass }}
+      accessModes:
+        - ReadWriteOnce
+      resources:
+        requests:
+          storage: {{ .Values.clamavMirror.volume.size }}Gi

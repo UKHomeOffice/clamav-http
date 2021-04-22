@@ -19,7 +19,6 @@ const (
 	scan_error_2 = iota
 )
 
-
 func (sh *ScanHandler) ServeHTTP(w http.ResponseWriter, r *http.Request) {
 	err := r.ParseMultipartForm(sh.Max_file_mem * 1024 * 1024)
 
@@ -59,15 +58,25 @@ func (sh *ScanHandler) ServeHTTP(w http.ResponseWriter, r *http.Request) {
 	}
 
 	result := <-response
-	if result.Status == "FOUND" {
-		w.WriteHeader(http.StatusForbidden)
-		sh.Logger.Infof("Scanning %v: found", files[0].Filename)
-		w.Write([]byte("Everything ok : false\n"))
-	} else {
-		w.WriteHeader(http.StatusOK)
-		sh.Logger.Infof("Scanning %v: clean", files[0].Filename)
-		w.Write([]byte("Everything ok : true\n"))
-	}
 
+	if result.Status == "OK" {
+		w.WriteHeader(http.StatusOK)
+		sh.Logger.Infof("Scanning %v: RES_OK", files[0].Filename)
+		w.Write([]byte("AV Response : OK\n"))
+	} else if result.Status == "FOUND" {
+		w.WriteHeader(http.StatusForbidden)
+		sh.Logger.Infof("Scanning %v: RES_FOUND", files[0].Filename)
+		w.Write([]byte("AV Response : FOUND\n"))
+	} else if result.Status == "ERROR" {
+		w.WriteHeader(http.StatusBadRequest)
+		sh.Logger.Infof("Scanning %v: RES_ERROR", files[0].Filename)
+		w.Write([]byte("AV Response : ERROR\n"))
+	} else if result.Status == "PARSE_ERROR" {
+		w.WriteHeader(http.StatusPreconditionFailed)
+		sh.Logger.Infof("Scanning %v: RES_PARSE_ERROR", files[0].Filename)
+		w.Write([]byte("AV Response : PARSE_ERROR\n"))
+	} else {
+		w.WriteHeader(http.StatusNotImplemented)
+	}
 	return
 }

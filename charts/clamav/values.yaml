@@ -11,23 +11,14 @@ fullnameOverride: ""
 service:
   # service.port -- The port to be used by the clamav service
   port: 443
-  # service.ingress -- Specifies ingress rules for the clamav service
-  ingress:
 
-serviceAccount:
-  # serviceAccount.create -- Should we create the service account and roles
-  create: true
-  # serviceAccount.name -- The name of the service account used by clamav-notify
-  name: clamav-notify
-  # serviceAccount.annotations -- Annotaions for the service account used by clamav-notify
-  annotations: {}
-
-clamavNotify:
-  # clamavNotify.image -- The clamav-notify docker image
-  image: quay.io/ukhomeofficedigital/acp-clamav-notify
-  # clamavNotify.version -- The clamav-notify docker image version - defaults to .Chart.appVersion
+clamavMirror:
+  replicaCount: 1
+  # clamavMirror.image -- The clamav-mirror docker image
+  image: quay.io/ukhomeofficedigital/acp-clamav-mirror
+  #  clamavMirror.version -- The clamav-mirror docker image version - defaults to .Chart.appVersion
   version: ""
-  # clamavNotify.resources -- The resource requests and limits for the clamav-http service
+  # clamavMirror.resources -- The resource requests and limits for the clamav-http service
   resources:   
     requests:
       cpu: 400m
@@ -35,18 +26,17 @@ clamavNotify:
     limits:
       cpu: 800m
       memory: 2000M
-  freshclam:
-    # clamavNotify.freshclam.checkFrequency -- The number of checks for new virus definitions per day
-    checkFrequency: 24
-    # clamavNotify.freshclam.mirrors -- A list of clamav mirrors to be used by the clamav-notify service
-    mirrors:
-      - db.uk.clamav.net
-      - database.clamav.net
+  cvdUpdate:
+    # clamavmirror.cvdUpdate.cvdCron -- DNS based check to update the local database, only new are files download
+    cvdCron: "*/10 * * * *"
+    # clamavmirror.cvdUpdate.MirrorCron -- Frequency to rsync changes to mirror - defaults to every hour   
+    mirrorCron: "0 * * * *"
+  metricsPort: 9090
   volume:
-    # clamavNotify.volume.storageClass -- The storage class of the volume used by clamav-notify
+    # clamavmirror.volume.storageClass -- The storage class of the volume used by clamav-mirror
     storageClass: gp2-encrypted
-    # clamavNotify.volume.size -- The size class of the volume used by clamav-notify in GB
-    size: 5
+    # clamavmirror.volume.size -- The size class of the volume used by clamav-mirror in GB
+    size: 10
 
 clamavHTTP:
   # clamavHTTP.image -- The clamav-http docker image
@@ -64,14 +54,6 @@ clamavHTTP:
       memory: 3000M
       ephemeral-storage: "1000M"
 
-clamavNotifyCron:
-  # clamavNotifyCron.image -- The clamav-notify-cron docker image
-  image: quay.io/ukhomeofficedigital/acp-clamav-notify-cron
-  # clamavNotify.version -- The clamav-notify-cron docker image version - defaults to .Chart.appVersion
-  version: ""
-  # clamavNotifyCron.schedule -- The cron schedule for loading updated signatures
-  schedule:  "*/15 * * * *"
-
 clamav:
   # clamav.image -- The clamav docker image
   image: quay.io/ukhomeofficedigital/acp-clamav 
@@ -80,7 +62,6 @@ clamav:
   freshclam:
     # clamav.freshclam.mirrors -- A list of clamav mirrors to be used by the clamav service
     mirrors:
-      - db.uk.clamav.net
       - database.clamav.net
   certificate:
     # clamav.certificate.create -- Should a certificate be created for the clamav service
@@ -98,13 +79,19 @@ clamav:
     maxReplicas: 20
     # clamav.scaling.cpuTarget -- The target cpu usage percentage for clamav
     cpuTarget: 30
-    # clamav.scaling.memoryTarget -- The target memory usage percentage for clamav
-    memoryTarget: 30
   limits:
     # clamav.limits.fileSize -- The largest file size scanable by clamav, in MB
     fileSize: 20
     # clamav.limits.scanSize -- The largest scan size permitted in clamav, in MB
     scanSize: 100
+    # clamav.limits.connectionQueueLength -- Maximum length the queue of pending connections may grow to
+    connectionQueueLength: 200
+    # clamav.limits.maxThreads --Maximum number of threads running at the same time.
+    maxThreads: 10
+    # clamav.sendBufTimeout -- This option specifies how long to wait (in milliseconds) if the send buffer is full, keep low to avoid clamd hanging
+    sendBufTimeout: 500
+
+
   resources:
     # clamav.resources -- The resource requests and limits for the clamav service
     requests:

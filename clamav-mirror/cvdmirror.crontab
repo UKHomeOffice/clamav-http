@@ -1,0 +1,4 @@
+#Keep definitions up to date 
+*/10 * * * * cvd update -V
+#Test and publish signatures
+*/50 * * * * ./test.sh
