@@ -34,12 +34,11 @@ function teardown() {
 # Globals:
 #   FRESHCLAM_CONFIG
 # Arguments:
-#   command
+#   $1
 # Outputs:
 #   Writes log to stdout
 ##############################################
 function testfreshclam() {
-  local command
 
   freshclam --config-file=$FRESHCLAM_CONFIG --stdout $1
 }
@@ -75,7 +74,7 @@ function scantest() {
   fi
   if ! clamscan files/safe.txt
     then 
-      err "ERROR Unexpected status, expected 1 got $?"
+      err "ERROR Unexpected status, expected 0 got $?"
       exit
     else 
       log "PASS"
