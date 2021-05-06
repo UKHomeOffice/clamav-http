@@ -19,7 +19,7 @@ spec:
       containers:
       - name: clamav
         image: "{{ .Values.clamav.image }}:{{ default .Chart.AppVersion .Values.clamav.version }}"
-        command: ['clamd']
+        command: ['./start.sh']
         ports:
         - containerPort: 3310
           name: api
