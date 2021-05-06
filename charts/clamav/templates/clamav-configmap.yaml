@@ -38,10 +38,9 @@ data:
   freshclam.conf: |
     LogTime yes
     LogVerbose yes
+    NotifyClamd /etc/clamav/clamd.conf
     LogSyslog no
     DatabaseOwner clam
-    DatabaseMirror http://{{ include "clamav.fullname" . }}-mirror
-    Foreground yes
     # This option allows you to easily point freshclam to private mirrors.
     # If PrivateMirror is set, freshclam does not attempt to use DNS
     # to determine whether its databases are out-of-date, instead it will
@@ -52,5 +51,4 @@ data:
     # and ScriptedUpdates. It can be used multiple times to provide
     # fall-back mirrors.
     # Default: disabled
-    #PrivateMirror mirror1.example.com
-    #PrivateMirror mirror2.example.com
+    PrivateMirror http://{{ include "clamav.fullname" . }}-mirror

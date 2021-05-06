@@ -15,6 +15,7 @@ spec:
       labels:
         name: {{ include "clamav.fullname" . }}
       annotations:
+        checksum/config: {{ include (print $.Template.BasePath "/clamav-configmap.yaml") . | sha256sum }}
     spec:
       containers:
       - name: clamav
