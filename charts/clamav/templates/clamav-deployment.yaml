@@ -20,7 +20,9 @@ spec:
       containers:
       - name: clamav
         image: "{{ .Values.clamav.image }}:{{ default .Chart.AppVersion .Values.clamav.version }}"
-        command: ['./start.sh']
+        command: ["/bin/bash", "-c"]
+        args:
+          - freshclam -d --stdout --foreground=true >> /proc/1/fd/1 & clamd
         ports:
         - containerPort: 3310
           name: api

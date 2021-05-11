@@ -39,6 +39,7 @@ data:
     LogTime yes
     LogVerbose yes
     NotifyClamd /etc/clamav/clamd.conf
+    Checks 24
     LogSyslog no
     DatabaseOwner clam
     # This option allows you to easily point freshclam to private mirrors.

@@ -7,8 +7,6 @@ WORKDIR /clam
 RUN apk add --update-cache bash wget curl shadow \
     clamav=$CLAM_VERSION clamav-libunrar=$CLAM_VERSION
 
-COPY start.sh .
-
 RUN adduser -S -g clamav -u 1000 clam \
     && chown -R clam:clamav /clam /var/log/clamav
 
