@@ -1,35 +1,99 @@
-pipeline:
-  test_api:
-    image: docker/compose:alpine-1.25.5
-    environment:
-      - DOCKER_HOST=tcp://172.17.0.1:2375
-      - DOCKER_IP=172.17.0.1
-    commands:
-      - apk add bash curl
-      - ./bin/test.sh
-    when:
-      event: [push]
-  tagged_images_to_quay:
-    image: docker:17.09.1
-    secrets:
-      - docker_password
-    environment:
-      - DOCKER_HOST=tcp://172.17.0.1:2375
-      - DOCKER_USERNAME=ukhomeofficedigital+acp_clamav
-    commands:
-      - bin/build.sh $DRONE_TAG
-    when:
-      event: [tag]
-  latest_images_to_quay:
-    image: docker:17.09.1
-    secrets:
-      - docker_password
-    environment:
-      - DOCKER_HOST=tcp://172.17.0.1:2375
-      - DOCKER_USERNAME=ukhomeofficedigital+acp_clamav
-    commands:
-      - bin/build.sh latest
-    when:
-      event: push
-      branch: master
+---
+kind: pipeline
+type: kubernetes
+name: default
 
+platform:
+  os: linux
+  arch: amd64
+
+steps:
+- name: test_api
+  pull: if-not-exists
+  image: docker/compose:alpine-1.25.5
+  environment:
+    DOCKER_HOST: tcp://127.0.0.1:2375
+  commands:
+  - n=0; while [ "$n" -lt 60 ] && [ ! docker stats --no-stream ]; do n=$(( n + 1 )); sleep 1; done
+  - apk add bash curl
+  - ./bin/test.sh
+  when:
+    event:
+    - push
+
+- name: scan_test_clamav-http
+  image: 340268328991.dkr.ecr.eu-west-2.amazonaws.com/acp/anchore-submission:latest
+  pull: always
+  environment:
+    IMAGE_NAME: test_clamav-http:latest
+    TOLERATE: low
+  depends_on:
+    - test_api
+  when:
+    event:
+    - push
+
+- name: scan_test_clamav
+  image: 340268328991.dkr.ecr.eu-west-2.amazonaws.com/acp/anchore-submission:latest
+  pull: always
+  environment:
+    IMAGE_NAME: test_clamav:latest
+    TOLERATE: low
+  depends_on:
+    - test_api
+  when:
+    event:
+    - push
+
+- name: scan_test_clamav-mirror
+  image: 340268328991.dkr.ecr.eu-west-2.amazonaws.com/acp/anchore-submission:latest
+  pull: always
+  environment:
+    IMAGE_NAME: test_clamav-mirror:latest
+    TOLERATE: low
+  depends_on:
+    - test_api
+  when:
+    event:
+    - push
+
+- name: tagged_images_to_quay
+  pull: if-not-exists
+  image: 340268328991.dkr.ecr.eu-west-2.amazonaws.com/acp/dind
+  commands:
+  - n=0; while [ "$n" -lt 60 ] && [ ! docker stats --no-stream ]; do n=$(( n + 1 )); sleep 1; done
+  - bin/build.sh $DRONE_TAG
+  environment:
+    DOCKER_PASSWORD:
+      from_secret: docker_password
+    DOCKER_USERNAME: ukhomeofficedigital+acp_clamav
+  when:
+    event:
+    - tag
+
+- name: latest_images_to_quay
+  pull: if-not-exists
+  image: 340268328991.dkr.ecr.eu-west-2.amazonaws.com/acp/dind
+  commands:
+  - n=0; while [ "$n" -lt 60 ] && [ ! docker stats --no-stream ]; do n=$(( n + 1 )); sleep 1; done
+  - bin/build.sh latest
+  environment:
+    DOCKER_PASSWORD:
+      from_secret: docker_password
+    DOCKER_USERNAME: ukhomeofficedigital+acp_clamav
+  when:
+    branch:
+    - master
+    event:
+    - push
+
+services:
+- name: docker
+  image: 340268328991.dkr.ecr.eu-west-2.amazonaws.com/acp/dind
+
+- name: anchore-submission-server
+  image: 340268328991.dkr.ecr.eu-west-2.amazonaws.com/acp/anchore-submission:latest
+  pull: always
+  commands:
+    - /run.sh server
+...
