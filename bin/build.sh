@@ -1,7 +1,7 @@
 #!/bin/sh
 set -o errexit
 
-docker login -u="ukhomeofficedigital+acp_clamav" -p=${DOCKER_PASSWORD} quay.io
+docker login -u=${DOCKER_USERNAME} -p=${DOCKER_PASSWORD} quay.io
 
 for image in 'clamav' 'clamav-http' 'clamav-mirror'
 do

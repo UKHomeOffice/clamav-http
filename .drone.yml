@@ -14,7 +14,7 @@ steps:
   environment:
     DOCKER_HOST: tcp://127.0.0.1:2375
   commands:
-  - n=0; while [ "$n" -lt 60 ] && [ ! docker stats --no-stream ]; do n=$(( n + 1 )); sleep 1; done
+  - n=0; while [ "$n" -lt 60 ] && [ ! "$(docker stats --no-stream)" ]; do n=$(( n + 1 )); sleep 1; done
   - apk add bash curl
   - ./bin/test.sh
   when:
@@ -75,7 +75,6 @@ steps:
   pull: if-not-exists
   image: 340268328991.dkr.ecr.eu-west-2.amazonaws.com/acp/dind
   commands:
-  - n=0; while [ "$n" -lt 60 ] && [ ! docker stats --no-stream ]; do n=$(( n + 1 )); sleep 1; done
   - bin/build.sh latest
   environment:
     DOCKER_PASSWORD:
