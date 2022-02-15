@@ -8,7 +8,8 @@ ENV SUPERCRONIC_URL=https://github.com/aptible/supercronic/releases/download/v0.
 WORKDIR /clam
 
 RUN apk add --update-cache bash vim wget shadow curl rsync lighttpd \
-    clamav=$CLAM_VERSION clamav-libunrar=$CLAM_VERSION
+    clamav=$CLAM_VERSION clamav-libunrar=$CLAM_VERSION && \
+    apk upgrade
 
 RUN adduser -S -g clamav -u 1000 clam \
     && chown -R clam:clamav /clam /var/log/clamav /var/lib/clamav

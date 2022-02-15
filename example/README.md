@@ -15,7 +15,7 @@ Add certmanager to minikube
 helm install \
   cert-manager jetstack/cert-manager \
   --namespace cert-manager \
-  --version v1.2.0 \
+  --version v1.7.1 \
   --create-namespace \
   --set installCRDs=true
 ```
