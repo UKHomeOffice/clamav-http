@@ -2,7 +2,7 @@ clamav
 ======
 A Helm chart for deploying a clamav-http service on kubernetes
 
-Current chart version is `0.3.6`
+Current chart version is `0.3.7`
 
 ## Chart Values
 
