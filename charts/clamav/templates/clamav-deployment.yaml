@@ -64,7 +64,7 @@ spec:
               command:
               - /bin/sh
               - -c
-              - while true; do sleep 90; /usr/local/openresty/nginx/sbin/nginx -s reload; done &
+              - while true; do sleep 90; date >> /tmp/reloads.log; /usr/local/openresty/nginx/sbin/nginx -s reload >> /tmp/reloads.log 2>&1; done &
         env:
         - name: PROXY_SERVICE_HOST
           value: 127.0.0.1
