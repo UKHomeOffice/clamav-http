@@ -26,6 +26,7 @@ COPY requirements.txt ./
 
 RUN pip install -r requirements.txt
 
+
 COPY start.sh lighttpdhost.conf lighttpdmirror.conf test.sh ./
 COPY freshclam.conf /etc/clamav/freshclam.conf
 RUN chown clam:clamav /etc/clamav/freshclam.conf
