@@ -1,6 +1,6 @@
 FROM python:3.9.9-alpine3.13
 
-ENV CLAM_VERSION=0.103.2-r0
+ENV CLAM_VERSION=0.103.6-r0
 ENV SUPERCRONIC_URL=https://github.com/aptible/supercronic/releases/download/v0.1.12/supercronic-linux-amd64 \
     SUPERCRONIC=supercronic-linux-amd64 \
     SUPERCRONIC_SHA1SUM=048b95b48b708983effb2e5c935a1ef8483d9e3e
@@ -25,6 +25,7 @@ RUN curl -fsSLO "$SUPERCRONIC_URL" \
 COPY requirements.txt ./
 
 RUN pip install -r requirements.txt
+
 
 COPY start.sh lighttpdhost.conf lighttpdmirror.conf test.sh ./
 COPY freshclam.conf /etc/clamav/freshclam.conf
