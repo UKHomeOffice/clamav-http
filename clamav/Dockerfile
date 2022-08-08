@@ -1,4 +1,4 @@
-FROM alpine:3.13.10
+FROM alpine:3.13
 
 ENV CLAM_VERSION=0.103.6-r0
 
