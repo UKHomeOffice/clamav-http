@@ -22,6 +22,8 @@ data:
       ".htm" => "text/html", 
     )
     index-file.names = ( "index.htm" )
+    server.modules += ( "mod_accesslog" )
+    accesslog.filename  = "/dev/stderr" 
 
   lightttpdmirror.conf: |
     server.document-root = "/home/clam/mirror/"
@@ -30,4 +32,6 @@ data:
       ".htm" => "text/html", 
     )
     index-file.names = ( "index.htm" )
+    server.modules += ( "mod_accesslog" )
+    accesslog.filename  = "/dev/stderr" 
     
