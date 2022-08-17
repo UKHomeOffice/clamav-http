@@ -16,7 +16,7 @@ steps:
   commands:
   - n=0; while [ "$n" -lt 60 ] && [ ! "$(docker stats --no-stream)" ]; do n=$(( n + 1 )); sleep 1; done
   - apk add bash curl
-#  - ./bin/test.sh
+  - ./bin/test.sh
   when:
     event:
     - push
