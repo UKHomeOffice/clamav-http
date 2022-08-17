@@ -23,7 +23,13 @@ data:
     )
     index-file.names = ( "index.htm" )
     server.modules += ( "mod_accesslog" )
-    accesslog.filename  = "/dev/stderr" 
+    accesslog.filename  = "/dev/stderr"
+    if $HTTP["URL"] == "/server-status" { 
+      accesslog.filename = "/dev/null"
+    }
+    if $HTTP["agent"] =^ "kube-probe" {
+      accesslog.filename = "/dev/null"
+    }
 
   lightttpdmirror.conf: |
     server.document-root = "/home/clam/mirror/"
@@ -33,5 +39,11 @@ data:
     )
     index-file.names = ( "index.htm" )
     server.modules += ( "mod_accesslog" )
-    accesslog.filename  = "/dev/stderr" 
+    accesslog.filename  = "/dev/stderr"
+    if $HTTP["URL"] == "/server-status" { 
+      accesslog.filename = "/dev/null"
+    }
+    if $HTTP["agent"] =^ "kube-probe" {
+      accesslog.filename = "/dev/null"
+    }
     
