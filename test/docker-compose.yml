@@ -7,7 +7,7 @@ services:
     - "8080:8080"
   clamav:
     build: ../clamav
-    command: ["/bin/sh", "-c", "sleep 10; freshclam --no-warnings && echo 'TCPSocket 3310' | clamd -c /dev/stdin --foreground"]
+    command: ["/bin/sh", "-c", "freshclam --no-warnings && echo 'TCPSocket 3310' | clamd -c /dev/stdin --foreground"]
     tmpfs:                                                                                                                                                                                                     
     - /var/lib/clamav:uid=1000
     volumes:
