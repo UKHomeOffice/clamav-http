@@ -13,7 +13,7 @@ docker-compose -f test/docker-compose.yml up --build -d
 
 echo "Waiting for clamd service"
 n=0
-until [ $n -ge 30 ]
+until [ $n -ge 60 ]
 do
   curl -s "$CLAMAV_HTTP_ENDPOINT" | grep -q 'Clamd responding: true'  && break
   n=$[$n+1]
@@ -21,7 +21,7 @@ do
 done
 
 
-if [ $n -ge 30 ]
+if [ $n -ge 60 ]
 then
   failures=1
   echo "Clamav failed to start"
