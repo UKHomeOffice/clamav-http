@@ -1,4 +1,4 @@
-FROM python:3.9.9-alpine3.15
+FROM python:3.9.13-alpine3.15
 
 ENV CLAM_VERSION=0.104.3-r0
 ENV SUPERCRONIC_URL=https://github.com/aptible/supercronic/releases/download/v0.1.12/supercronic-linux-amd64 \

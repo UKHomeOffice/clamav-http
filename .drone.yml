@@ -8,18 +8,18 @@ platform:
   arch: amd64
 
 steps:
-- name: test_api
-  pull: if-not-exists
-  image: docker/compose:alpine-1.25.5
-  environment:
-    DOCKER_HOST: tcp://127.0.0.1:2375
-  commands:
-  - n=0; while [ "$n" -lt 60 ] && [ ! "$(docker stats --no-stream)" ]; do n=$(( n + 1 )); sleep 1; done
-  - apk add bash curl
-  - ./bin/test.sh
-  when:
-    event:
-    - push
+# - name: test_api
+#   pull: if-not-exists
+#   image: docker/compose:alpine-1.25.5
+#   environment:
+#     DOCKER_HOST: tcp://127.0.0.1:2375
+#   commands:
+#   - n=0; while [ "$n" -lt 60 ] && [ ! "$(docker stats --no-stream)" ]; do n=$(( n + 1 )); sleep 1; done
+#   - apk add bash curl
+#   - ./bin/test.sh
+#   when:
+#     event:
+#     - push
 
 - name: scan_test_clamav-http
   image: 340268328991.dkr.ecr.eu-west-2.amazonaws.com/acp/anchore-submission:latest
