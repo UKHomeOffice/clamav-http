@@ -40,6 +40,6 @@ else
   echo "Tests complete with $failures failures"
 fi
 
-#docker-compose -f test/docker-compose.yml down
+docker-compose -f test/docker-compose.yml down
 
 exit $failures
