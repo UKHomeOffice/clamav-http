@@ -39,6 +39,8 @@ steps:
   environment:
     IMAGE_NAME: test_clamav:latest
     TOLERATE: low
+    # https://tools.cisco.com/security/center/content/CiscoSecurityAdvisory/cisco-sa-20160531-wsa-esa
+    WHITELIST: CVE-2016-1405
   depends_on:
     - test_api
   when:
@@ -51,6 +53,8 @@ steps:
   environment:
     IMAGE_NAME: test_clamav-mirror:latest
     TOLERATE: low
+    # https://tools.cisco.com/security/center/content/CiscoSecurityAdvisory/cisco-sa-20160531-wsa-esa
+    WHITELIST: CVE-2016-1405
   depends_on:
     - test_api
   when:
