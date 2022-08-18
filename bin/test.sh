@@ -9,7 +9,7 @@ CLAMAV_HTTP_ENDPOINT=http://$DOCKER_IP:8080
 docker-compose -f test/docker-compose.yml build
 
 # chmod 777 test/clamav_mirror_db
-# docker-compose -f test/docker-compose.yml up --build &
+docker-compose -f test/docker-compose.yml up --build -d
 
 
 # echo "Waiting for clamd service"
