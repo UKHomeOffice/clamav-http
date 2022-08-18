@@ -24,10 +24,10 @@ data:
     index-file.names = ( "index.htm" )
     server.modules += ( "mod_accesslog" )
     accesslog.filename  = "/dev/stderr"
-    if $HTTP["url"] == "/server-status" { 
+    $HTTP["url"] == "/server-status" { 
       accesslog.filename = "/dev/null"
     }
-    if $HTTP["useragent"] =~ "kube-probe" {
+    $HTTP["useragent"] =~ "kube-probe" {
       accesslog.filename = "/dev/null"
     }
 
