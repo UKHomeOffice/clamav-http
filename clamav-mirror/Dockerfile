@@ -22,7 +22,7 @@ RUN curl -fsSLO "$SUPERCRONIC_URL" \
  && ln -s "/usr/local/bin/${SUPERCRONIC}" /usr/local/bin/supercronic
 
 
-RUN pip install -vv cvdupdate==0.2.0
+RUN pip install -vv cvdupdate==1.1.1
 
 COPY start.sh lighttpdhost.conf lighttpdmirror.conf test.sh ./
 COPY freshclam.conf /etc/clamav/freshclam.conf
