@@ -6,7 +6,7 @@ failures=0
 DOCKER_IP="${DOCKER_IP:-127.0.0.1}"
 CLAMAV_HTTP_ENDPOINT=http://$DOCKER_IP:8080
 
-
+chmod 777 test/clamav_mirror_db
 docker-compose -f test/docker-compose.yml up --build -d
 
 
