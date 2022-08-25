@@ -58,8 +58,8 @@ spec:
           mountPath: /clam/lighttpdhost.conf
           subPath: lighttpdhost.conf
         - name: config-volume
-          mountPath: /clam/lightttpdmirror.conf
-          subPath: lightttpdmirror.conf
+          mountPath: /clam/lighttpdmirror.conf
+          subPath: lighttpdmirror.conf
       volumes:
       - name: config-volume
         configMap:
