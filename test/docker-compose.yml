@@ -19,3 +19,7 @@ services:
     restart: unless-stopped
   clamav-mirror:
     build: ../clamav-mirror
+    volumes:
+    - type: bind
+      source: ./clamav_mirror_db
+      target: /home/clam

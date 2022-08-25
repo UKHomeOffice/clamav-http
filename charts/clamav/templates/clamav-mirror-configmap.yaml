@@ -23,9 +23,15 @@ data:
     )
     index-file.names = ( "index.htm" )
     server.modules += ( "mod_accesslog" )
-    accesslog.filename  = "/dev/stderr" 
+    accesslog.filename  = "/dev/stderr"
+    $HTTP["url"] == "/server-status" { 
+      accesslog.filename = "/dev/null"
+    }
+    $HTTP["useragent"] =~ "kube-probe" {
+      accesslog.filename = "/dev/null"
+    }
 
-  lightttpdmirror.conf: |
+  lighttpdmirror.conf: |
     server.document-root = "/home/clam/mirror/"
     server.port = 8080
     mimetype.assign = (
@@ -33,5 +39,11 @@ data:
     )
     index-file.names = ( "index.htm" )
     server.modules += ( "mod_accesslog" )
-    accesslog.filename  = "/dev/stderr" 
+    accesslog.filename  = "/dev/stderr"
+    $HTTP["url"] == "/server-status" { 
+      accesslog.filename = "/dev/null"
+    }
+    $HTTP["useragent"] =~ "kube-probe" {
+      accesslog.filename = "/dev/null"
+    }
     

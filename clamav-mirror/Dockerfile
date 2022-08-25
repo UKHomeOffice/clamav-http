@@ -1,13 +1,13 @@
-FROM python:3.9.9-alpine3.13
+FROM python:3.10.6-alpine3.15
 
-ENV CLAM_VERSION=0.103.6-r0
+ENV CLAM_VERSION=0.104.3-r0
 ENV SUPERCRONIC_URL=https://github.com/aptible/supercronic/releases/download/v0.1.12/supercronic-linux-amd64 \
     SUPERCRONIC=supercronic-linux-amd64 \
     SUPERCRONIC_SHA1SUM=048b95b48b708983effb2e5c935a1ef8483d9e3e
 
 WORKDIR /clam
 
-RUN apk add --update-cache bash vim wget shadow curl rsync lighttpd \
+RUN apk add --update-cache bash curl rsync lighttpd \
     clamav=$CLAM_VERSION clamav-libunrar=$CLAM_VERSION && \
     apk upgrade
 
@@ -22,18 +22,13 @@ RUN curl -fsSLO "$SUPERCRONIC_URL" \
  && ln -s "/usr/local/bin/${SUPERCRONIC}" /usr/local/bin/supercronic
 
 
-COPY requirements.txt ./
-
-RUN pip install -r requirements.txt
-
+RUN pip install -vv cvdupdate==1.1.1
 
 COPY start.sh lighttpdhost.conf lighttpdmirror.conf test.sh ./
 COPY freshclam.conf /etc/clamav/freshclam.conf
-RUN chown clam:clamav /etc/clamav/freshclam.conf
 COPY cvdmirror.crontab .
 COPY files/ ./files/
-RUN chown -R clam:clamav /clam \
-  && chmod +x start.sh test.sh
+RUN chmod +x start.sh test.sh
 USER 1000
 
 EXPOSE 8080 9090
