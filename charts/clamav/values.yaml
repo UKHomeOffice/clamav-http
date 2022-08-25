@@ -106,7 +106,7 @@ nginxProxy:
   # nginxProxy.image -- The nginx proxy docker image
   image: quay.io/ukhomeofficedigital/nginx-proxy
   # nginxProxy.version -- The nginx proxy docker image version
-  version: v4.2.0
+  version: v4.2.0@sha256:544a214be7040b49c07e831215e7dcb0d485b8ac82832f368b8415f61bf27bb2
   # nginxProxy.resources -- The resource requests and limits for the nginx proxy service
   resources:
     requests:
