@@ -1,0 +1,18 @@
+{{ if .Values.ingress.enabled }}
+apiVersion: extensions/v1beta1
+kind: Ingress
+metadata:
+  {{- if  .Values.ingress.annotations }}
+  annotations: {{ toYaml .Values.ingress.annotations | nindent 4 }}
+  {{- end }}
+  name: {{ include "clamav.fullname" . }}
+spec:
+  rules:
+  - host: {{ .Values.ingress.host }}
+    http:
+      paths:
+      - backend:
+          serviceName: {{ include "clamav.fullname" . }}
+          servicePort: {{ .Values.service.port }}
+        path: / 
+{{ end }}
