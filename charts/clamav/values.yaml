@@ -117,3 +117,10 @@ nginxProxy:
       cpu: 1500m
       memory: 3000M
       ephemeral-storage: "1000M"
+ingress:
+  # ingress.enabled - Boolean flag to enable generating the ingress object
+  enabled: false
+  # ingress.host - ingress host
+  host: ""
+  # ingress.annoations - metadata annotations applied to
+  annotations:
