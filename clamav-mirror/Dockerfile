@@ -1,11 +1,14 @@
 FROM python:3.9.16-alpine3.17
 
-ENV CLAM_VERSION=0.105.2-r0
+ENV CLAM_VERSION=1.0.1-r0
 ENV SUPERCRONIC_URL=https://github.com/aptible/supercronic/releases/download/v0.2.1/supercronic-linux-amd64 \
     SUPERCRONIC=supercronic-linux-amd64 \
     SUPERCRONIC_SHA1SUM=d7f4c0886eb85249ad05ed592902fa6865bb9d70
 
 WORKDIR /clam
+
+# Add edge repository
+RUN echo "http://dl-cdn.alpinelinux.org/alpine/edge/community" >> /etc/apk/repositories
 
 RUN apk add --no-cache bash curl rsync lighttpd \
     clamav=$CLAM_VERSION clamav-libunrar=$CLAM_VERSION && \
@@ -21,6 +24,7 @@ RUN curl -fsSLO "$SUPERCRONIC_URL" \
  && mv "$SUPERCRONIC" "/usr/local/bin/${SUPERCRONIC}" \
  && ln -s "/usr/local/bin/${SUPERCRONIC}" /usr/local/bin/supercronic
 
+RUN pip install -U setuptools certifi
 
 RUN pip install -vv cvdupdate==1.1.1
 
