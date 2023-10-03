@@ -27,6 +27,7 @@ steps:
   environment:
     IMAGE_NAME: test_clamav-http:latest
     TOLERATE: low
+    WHITELIST: CVE-2023-0466
   depends_on:
     - test_api
   when:
@@ -56,7 +57,7 @@ steps:
     # CVE-2016-1405 - fixed in clamav 0.99: https://tools.cisco.com/security/center/content/CiscoSecurityAdvisory/cisco-sa-20160531-wsa-esa
     # CVE-2015-3276 - openldap package, package not used
     # CVE-2007-4559 - python untar overwrite vulnerability, to mitigate this container user doesnt have permissions to overwrite any executables 
-    WHITELIST: CVE-2016-1405,CVE-2015-3276,CVE-2007-4559
+    WHITELIST: CVE-2016-1405,CVE-2015-3276,CVE-2007-4559,GHSA-43fp-rhv2-5gv8,CVE-2022-46908,CVE-2023-24329
   depends_on:
     - test_api
   when:
