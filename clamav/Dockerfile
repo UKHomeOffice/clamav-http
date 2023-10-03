@@ -1,6 +1,6 @@
-FROM alpine:3.17
+FROM alpine:3.18
 
-ENV CLAM_VERSION=1.0.1-r1
+ENV CLAM_VERSION=1.1.2-r0
 
 WORKDIR /clam
 
