@@ -21,55 +21,82 @@ steps:
     event:
     - push
 
-- name: scan_test_clamav-http
-  image: 340268328991.dkr.ecr.eu-west-2.amazonaws.com/acp/anchore-submission:latest
-  pull: always
-  environment:
-    IMAGE_NAME: test_clamav-http:latest
-    TOLERATE: low
-    WHITELIST: CVE-2023-0466
-  depends_on:
-    - test_api
-  when:
-    event:
-    - push
-
-- name: scan_test_clamav
-  image: 340268328991.dkr.ecr.eu-west-2.amazonaws.com/acp/anchore-submission:latest
-  pull: always
-  environment:
-    IMAGE_NAME: test_clamav:latest
-    TOLERATE: low
-    # https://tools.cisco.com/security/center/content/CiscoSecurityAdvisory/cisco-sa-20160531-wsa-esa
-    WHITELIST: CVE-2016-1405
-  depends_on:
-    - test_api
-  when:
-    event:
-    - push
-
-- name: scan_test_clamav-mirror
-  image: 340268328991.dkr.ecr.eu-west-2.amazonaws.com/acp/anchore-submission:latest
-  pull: always
-  environment:
-    IMAGE_NAME: test_clamav-mirror:latest
-    TOLERATE: low
-    # CVE-2016-1405 - fixed in clamav 0.99: https://tools.cisco.com/security/center/content/CiscoSecurityAdvisory/cisco-sa-20160531-wsa-esa
-    # CVE-2015-3276 - openldap package, package not used
-    # CVE-2007-4559 - python untar overwrite vulnerability, to mitigate this container user doesnt have permissions to overwrite any executables 
-    WHITELIST: CVE-2016-1405,CVE-2015-3276,CVE-2007-4559,CVE-2023-27043,CVE-2023-36632,GHSA-r9hx-vwmv-q579,CVE-2023-24329,CVE-2023-40217
-  depends_on:
-    - test_api
-  when:
-    event:
-    - push
-
-- name: tagged_images_to_quay
+- name: build-clamav
   pull: if-not-exists
   image: 340268328991.dkr.ecr.eu-west-2.amazonaws.com/acp/dind
   commands:
-  - n=0; while [ "$n" -lt 60 ] && [ ! docker stats --no-stream ]; do n=$(( n + 1 )); sleep 1; done
-  - bin/build.sh $DRONE_TAG
+    - cd clamav
+    - /usr/local/bin/wait
+    - docker build --no-cache -t clamav:$${DRONE_COMMIT_SHA} .
+
+- name: build-clamav-http
+  pull: if-not-exists
+  image: 340268328991.dkr.ecr.eu-west-2.amazonaws.com/acp/dind
+  commands:
+    - cd clamav-http
+    - /usr/local/bin/wait
+    - docker build --no-cache -t clamav-http:$${DRONE_COMMIT_SHA} .
+
+- name: build-clamav-mirror
+  pull: if-not-exists
+  image: 340268328991.dkr.ecr.eu-west-2.amazonaws.com/acp/dind
+  commands:
+    - cd clamav-mirror
+    - /usr/local/bin/wait
+    - docker build --no-cache -t clamav-mirror:$${DRONE_COMMIT_SHA} .
+
+- name: scan-clamav-http
+  pull: Always
+  image: 340268328991.dkr.ecr.eu-west-2.amazonaws.com/acp/trivy/client:latest
+  resources:
+    limits:
+      cpu: 1000
+      memory: 1024Mi
+  environment:
+    IMAGE_NAME: clamav-http:${DRONE_COMMIT_SHA}
+    IGNORE_UNFIXED: "true"
+  when:
+    event:
+    - pull_request
+    - push
+
+- name: scan-clamav
+  pull: Always
+  image: 340268328991.dkr.ecr.eu-west-2.amazonaws.com/acp/trivy/client:latest
+  resources:
+    limits:
+      cpu: 1000
+      memory: 1024Mi
+  environment:
+    IMAGE_NAME: clamav:${DRONE_COMMIT_SHA}
+    IGNORE_UNFIXED: "true"
+  when:
+    event:
+    - pull_request
+    - push
+
+- name: scan-clamav-mirror
+  pull: Always
+  image: 340268328991.dkr.ecr.eu-west-2.amazonaws.com/acp/trivy/client:latest
+  resources:
+    limits:
+      cpu: 1000
+      memory: 1024Mi
+  environment:
+    IMAGE_NAME: clamav-mirror:${DRONE_COMMIT_SHA}
+    IGNORE_UNFIXED: "true"
+  when:
+    event:
+    - pull_request
+    - push
+
+- name: tagged_clamav_to_quay
+  pull: if-not-exists
+  image: 340268328991.dkr.ecr.eu-west-2.amazonaws.com/acp/dind
+  commands:
+  - docker login -u=$${DOCKER_USERNAME} -p=$${DOCKER_PASSWORD} quay.io
+  - docker tag quay.io/ukhomeofficedigital/acp-clamav:$${DRONE_COMMIT_SHA} quay.io/ukhomeofficedigital/acp-clamav:$${DRONE_TAG}
+  - docker push quay.io/ukhomeofficedigital/acp-clamav:$${DRONE_TAG}
   environment:
     DOCKER_PASSWORD:
       from_secret: docker_password
@@ -78,11 +105,51 @@ steps:
     event:
     - tag
 
-- name: latest_images_to_quay
+- name: tagged_clamav_http_to_quay
   pull: if-not-exists
   image: 340268328991.dkr.ecr.eu-west-2.amazonaws.com/acp/dind
   commands:
-  - bin/build.sh latest
+  - docker login -u=$${DOCKER_USERNAME} -p=$${DOCKER_PASSWORD} quay.io
+  - docker tag quay.io/ukhomeofficedigital/acp-clamav-http:$${DRONE_COMMIT_SHA} quay.io/ukhomeofficedigital/acp-clamav-http:$${DRONE_TAG}
+  - docker push quay.io/ukhomeofficedigital/acp-clamav-http:$${DRONE_TAG}
+  environment:
+    DOCKER_PASSWORD:
+      from_secret: docker_password
+    DOCKER_USERNAME: ukhomeofficedigital+acp_clamav
+  when:
+    event:
+    - tag
+
+- name: tagged_clamav_mirror_to_quay
+  pull: if-not-exists
+  image: 340268328991.dkr.ecr.eu-west-2.amazonaws.com/acp/dind
+  commands:
+  - docker login -u=$${DOCKER_USERNAME} -p=$${DOCKER_PASSWORD} quay.io
+  - docker tag quay.io/ukhomeofficedigital/acp-clamav-mirror:$${DRONE_COMMIT_SHA} quay.io/ukhomeofficedigital/acp-clamav-mirror:$${DRONE_TAG}
+  - docker push quay.io/ukhomeofficedigital/acp-clamav-mirror:$${DRONE_TAG}
+  environment:
+    DOCKER_PASSWORD:
+      from_secret: docker_password
+    DOCKER_USERNAME: ukhomeofficedigital+acp_clamav
+  when:
+    event:
+    - tag
+
+# Explanation: new version must be explicitly tagged. Also, latest tag is removed.
+# Several tenants are using latest tag, therefore it is removed to eliminate a risk of
+# accidental pull of new image. To use a new version, select explicit version number in
+# the Kubernetes manifest. Thank you.
+- name: all_images_to_quay
+  pull: if-not-exists
+  image: 340268328991.dkr.ecr.eu-west-2.amazonaws.com/acp/dind
+  commands:
+  - docker login -u=$${DOCKER_USERNAME} -p=$${DOCKER_PASSWORD} quay.io
+  - docker tag quay.io/ukhomeofficedigital/acp-clamav:$${DRONE_COMMIT_SHA} quay.io/ukhomeofficedigital/acp-clamav:$${DRONE_COMMIT_SHA}
+  - docker push quay.io/ukhomeofficedigital/acp-clamav:$${DRONE_COMMIT_SHA}
+  - docker tag quay.io/ukhomeofficedigital/acp-clamav-http:$${DRONE_COMMIT_SHA} quay.io/ukhomeofficedigital/acp-clamav-http:$${DRONE_COMMIT_SHA}
+  - docker push quay.io/ukhomeofficedigital/acp-clamav-http:$${DRONE_COMMIT_SHA}
+  - docker tag quay.io/ukhomeofficedigital/acp-clamav-mirror:$${DRONE_COMMIT_SHA} quay.io/ukhomeofficedigital/acp-clamav-mirror:$${DRONE_COMMIT_SHA}
+  - docker push quay.io/ukhomeofficedigital/acp-clamav-mirror:$${DRONE_COMMIT_SHA}
   environment:
     DOCKER_PASSWORD:
       from_secret: docker_password
@@ -97,9 +164,4 @@ services:
 - name: docker
   image: 340268328991.dkr.ecr.eu-west-2.amazonaws.com/acp/dind
 
-- name: anchore-submission-server
-  image: 340268328991.dkr.ecr.eu-west-2.amazonaws.com/acp/anchore-submission:latest
-  pull: always
-  commands:
-    - /run.sh server
 ...
