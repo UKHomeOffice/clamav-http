@@ -1,6 +1,6 @@
-FROM python:3.9.16-alpine3.18
+FROM python:3.9.18-alpine3.19
 
-ENV CLAM_VERSION=1.1.2-r0
+ENV CLAM_VERSION=1.2.2-r0
 ENV SUPERCRONIC_URL=https://github.com/aptible/supercronic/releases/download/v0.2.26/supercronic-linux-amd64 \
     SUPERCRONIC=supercronic-linux-amd64 \
     SUPERCRONIC_SHA1SUM=7a79496cf8ad899b99a719355d4db27422396735
