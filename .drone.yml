@@ -144,11 +144,11 @@ steps:
   image: 340268328991.dkr.ecr.eu-west-2.amazonaws.com/acp/dind
   commands:
   - docker login -u=$${DOCKER_USERNAME} -p=$${DOCKER_PASSWORD} quay.io
-  - docker tag quay.io/ukhomeofficedigital/acp-clamav:$${DRONE_COMMIT_SHA} quay.io/ukhomeofficedigital/acp-clamav:$${DRONE_COMMIT_SHA}
+  - docker tag clamav:$${DRONE_COMMIT_SHA} quay.io/ukhomeofficedigital/acp-clamav:$${DRONE_COMMIT_SHA}
   - docker push quay.io/ukhomeofficedigital/acp-clamav:$${DRONE_COMMIT_SHA}
-  - docker tag quay.io/ukhomeofficedigital/acp-clamav-http:$${DRONE_COMMIT_SHA} quay.io/ukhomeofficedigital/acp-clamav-http:$${DRONE_COMMIT_SHA}
+  - docker tag clamav-http:$${DRONE_COMMIT_SHA} quay.io/ukhomeofficedigital/acp-clamav-http:$${DRONE_COMMIT_SHA}
   - docker push quay.io/ukhomeofficedigital/acp-clamav-http:$${DRONE_COMMIT_SHA}
-  - docker tag quay.io/ukhomeofficedigital/acp-clamav-mirror:$${DRONE_COMMIT_SHA} quay.io/ukhomeofficedigital/acp-clamav-mirror:$${DRONE_COMMIT_SHA}
+  - docker tag clamav-mirror:$${DRONE_COMMIT_SHA} quay.io/ukhomeofficedigital/acp-clamav-mirror:$${DRONE_COMMIT_SHA}
   - docker push quay.io/ukhomeofficedigital/acp-clamav-mirror:$${DRONE_COMMIT_SHA}
   environment:
     DOCKER_PASSWORD:
