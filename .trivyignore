@@ -1,3 +1,6 @@
 # Fix for these CVEs are in edge tag, will wait until LTS
 CVE-2024-0853
 CVE-2024-25062
+CVE-2023-42364
+CVE-2023-42365
+CVE-2024-24791
