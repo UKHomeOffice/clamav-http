@@ -7,6 +7,8 @@ WORKDIR /clam
 # Add edge repository
 RUN echo "http://dl-cdn.alpinelinux.org/alpine/edge/community" >> /etc/apk/repositories
 
+RUN apk update && apk upgrade --no-cache
+
 RUN apk add --no-cache bash clamav=$CLAM_VERSION clamav-libunrar=$CLAM_VERSION
 
 RUN apk add --no-cache --upgrade openssl
