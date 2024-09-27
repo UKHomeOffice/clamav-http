@@ -58,13 +58,6 @@ spec:
         resources: {{ toYaml .Values.clamavHTTP.resources | nindent 10 }}
       - name: nginx
         image: {{.Values.nginxProxy.image}}:{{.Values.nginxProxy.version}}
-        lifecycle:
-          postStart:
-            exec:
-              command:
-              - /bin/sh
-              - -c
-              - while true; do sleep 43200; date >> /tmp/reloads.log; /usr/local/openresty/nginx/sbin/nginx -s reload >> /tmp/reloads.log 2>&1; done &
         env:
         - name: PROXY_SERVICE_HOST
           value: 127.0.0.1
@@ -89,9 +82,9 @@ spec:
             add_header Cache-Control private;
             add_header X-Forwarded-Proto "https";
         livenessProbe:
-          httpGet:
-            path: /
-            port: 8080
+          exec:
+            command:
+            - /scripts/nginx_health_check.sh
           initialDelaySeconds: 10
           timeoutSeconds: 5
           periodSeconds: 5
