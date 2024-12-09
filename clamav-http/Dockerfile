@@ -1,4 +1,4 @@
-FROM golang:1.21 as builder
+FROM golang:1.22 as builder
 
 WORKDIR /go/src/github.com/ukhomeoffice/clamav-http/clamav-http
 
@@ -9,7 +9,7 @@ COPY server/  ./server/
 RUN CGO_ENABLED=0 GOOS=linux go install -v \
             github.com/ukhomeoffice/clamav-http/clamav-http
 
-FROM alpine:3.20.2
+FROM alpine:3.21
 RUN apk --no-cache add ca-certificates
 
 RUN addgroup -g 1000 -S app && \

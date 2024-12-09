@@ -1,9 +1,9 @@
 FROM python:3.11-alpine3.20
 
-ENV CLAM_VERSION=1.2.2-r0
-ENV SUPERCRONIC_URL=https://github.com/aptible/supercronic/releases/download/v0.2.30/supercronic-linux-amd64 \
+ENV CLAM_VERSION=1.4.1-r0
+ENV SUPERCRONIC_URL=https://github.com/aptible/supercronic/releases/download/v0.2.33/supercronic-linux-amd64 \
     SUPERCRONIC=supercronic-linux-amd64 \
-    SUPERCRONIC_SHA1SUM=9f27ad28c5c57cd133325b2a66bba69ba2235799
+    SUPERCRONIC_SHA1SUM=71b0d58cc53f6bd72cf2f293e09e294b79c666d8
 
 WORKDIR /clam
 
