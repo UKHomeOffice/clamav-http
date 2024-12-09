@@ -104,9 +104,9 @@ clamav:
       ephemeral-storage: "1000M"
 nginxProxy:
   # nginxProxy.image -- The nginx proxy docker image
-  image: quay.io/ukhomeofficedigital/nginx-proxy
+  image: quay.io/ukhomeofficedigital/acp-nginx-proxy-rocky
   # nginxProxy.version -- The nginx proxy docker image version
-  version: v4.2.0@sha256:544a214be7040b49c07e831215e7dcb0d485b8ac82832f368b8415f61bf27bb2
+  version: 0.0.2@sha256:d2841cd4ea7544c2a9aa3cb7b9c49632dd134a31b09ea25bad763217b4cc5ffa
   # nginxProxy.resources -- The resource requests and limits for the nginx proxy service
   resources:
     requests:
