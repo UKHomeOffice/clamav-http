@@ -67,12 +67,16 @@ func (sh *ScanHandler) ServeHTTP(w http.ResponseWriter, r *http.Request) {
 	}
 
 	c := clamd.NewClamd(sh.Address)
-	response, err := c.ScanStream(f, make(chan bool))
+	abort := make(chan bool)
+	defer close(abort)
+
+	response, err := c.ScanStream(f, abort)
 	if err != nil {
 		sh.Logger.Errorf("scan error %d: %s", scan_error_2, err.Error())
 		writeError(w, wantJSON, http.StatusInternalServerError, err.Error())
 		return
 	}
+	defer r.MultipartForm.RemoveAll()
 
 	result := <-response
 
