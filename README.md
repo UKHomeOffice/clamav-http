@@ -1,4 +1,4 @@
-# clamav-http3
+# clamav-http4
 Clamav instance with http api. To supersede https://github.com/UKHomeOffice/docker-clamav
 
 
