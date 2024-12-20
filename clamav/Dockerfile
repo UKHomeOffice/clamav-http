@@ -1,4 +1,4 @@
-FROM alpine:3.20.2
+FROM alpine:3.21.0
 
 ENV CLAM_VERSION=1.2.2-r0
 
