@@ -1,13 +1,14 @@
-FROM alpine:3.22
+FROM alpine:3.22.1
 
-ENV CLAM_VERSION=1.4.2-r0
+ENV CLAM_VERSION=1.4.3-r0
 
 WORKDIR /clam
 
 # Add edge repository
-RUN echo "http://dl-cdn.alpinelinux.org/alpine/edge/community" >> /etc/apk/repositories
+RUN echo "http://dl-cdn.alpinelinux.org/alpine/edge/main" >> /etc/apk/repositories \
+ && echo "http://dl-cdn.alpinelinux.org/alpine/edge/community" >> /etc/apk/repositories
 
-RUN apk update && apk upgrade --no-cache
+RUN apk update && apk upgrade pcre2 --no-cache
 
 RUN apk add --no-cache bash clamav=$CLAM_VERSION clamav-libunrar=$CLAM_VERSION
 
