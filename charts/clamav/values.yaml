@@ -106,7 +106,7 @@ nginxProxy:
   # nginxProxy.image -- The nginx proxy docker image
   image: quay.io/ukhomeofficedigital/acp-nginx-proxy-rocky
   # nginxProxy.version -- The nginx proxy docker image version
-  version: 0.0.3@sha256:6f88ecef5719f3f8c5dad75e5364b0df90a6a14b2b84a3ebb911dd9f71f46ede
+  version: 0.0.4@sha256:239b4275cb44c37b69318ffdcf50fa36b249647deac553e5c0a61cb4ca9e2dc6
   # nginxProxy.resources -- The resource requests and limits for the nginx proxy service
   resources:
     requests:
