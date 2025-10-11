@@ -9,7 +9,7 @@ COPY server/  ./server/
 RUN CGO_ENABLED=0 GOOS=linux go install -v \
             github.com/ukhomeoffice/clamav-http/clamav-http
 
-FROM alpine:3.22.1
+FROM alpine:3.22.2
 RUN apk --no-cache add ca-certificates
 
 RUN addgroup -g 1000 -S app && \
