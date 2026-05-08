@@ -1,12 +1,11 @@
 FROM alpine:3.23.4
 
-ENV CLAM_VERSION=1.5.2
+ENV CLAM_VERSION=1.4.4-r0
 
 WORKDIR /clam
 
-# Edge repository needed for ClamAV 1.5.x
-RUN echo "http://dl-cdn.alpinelinux.org/alpine/edge/community" >> /etc/apk/repositories \
- && echo "http://dl-cdn.alpinelinux.org/alpine/edge/main" >> /etc/apk/repositories
+# Add community repository for ClamAV
+RUN echo "http://dl-cdn.alpinelinux.org/alpine/v3.23/community" >> /etc/apk/repositories
 
 RUN apk update && apk upgrade --no-cache
 
