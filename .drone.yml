@@ -9,8 +9,8 @@ platform:
 
 steps:
 - name: test_api
-  pull: if-not-exists
-  image: docker/compose:alpine-1.25.5
+  pull: always
+  image: docker/compose:alpine-1.29.2
   environment:
     DOCKER_HOST: tcp://127.0.0.1:2375
   commands:
