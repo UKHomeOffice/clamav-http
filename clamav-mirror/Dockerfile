@@ -20,7 +20,7 @@ RUN adduser -S -g clamav -u 1000 clam \
 
 RUN pip install --no-cache-dir -U setuptools certifi
 
-RUN pip install --no-cache-dir -vv cvdupdate==1.1.1
+RUN pip install --no-cache-dir cvdupdate==1.2.0
 
 COPY start.sh lighttpdhost.conf lighttpdmirror.conf test.sh ./
 COPY freshclam.conf /etc/clamav/freshclam.conf
