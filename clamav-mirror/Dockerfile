@@ -18,7 +18,7 @@ RUN adduser -S -g clamav -u 1000 clam \
  && chown clam:clamav /usr/local/bin/supercronic \
  && chown -R clam:clamav /clam /var/log/clamav /var/lib/clamav
 
-RUN pip install --no-cache-dir -U setuptools certifi
+RUN pip install --no-cache-dir -U pip setuptools certifi
 
 RUN pip install --no-cache-dir cvdupdate==1.2.0
 
