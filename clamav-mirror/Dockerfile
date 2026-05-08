@@ -1,7 +1,7 @@
 FROM golang:1.26.3-alpine3.23 AS supercronic-build
 RUN go install github.com/aptible/supercronic@v0.2.45
 
-FROM python:3.14-alpine3.23.4
+FROM python:3.14-alpine3.23
 
 ENV CLAM_VERSION=1.4.4-r0
 WORKDIR /clam
