@@ -3,7 +3,7 @@ package v0
 import (
 	"net/http"
 
-	"github.com/dutchcoders/go-clamd"
+	"github.com/IntelXLabs-LLC/go-clamd"
 	"github.com/sirupsen/logrus"
 )
 

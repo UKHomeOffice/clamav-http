@@ -12,15 +12,21 @@ docker-compose -f test/docker-compose.yml up --build -d
 
 echo "Waiting for clamd service"
 n=0
-until [ $n -ge 30 ]
+until [ $n -ge 60 ]
 do
-  curl -s "$CLAMAV_HTTP_ENDPOINT" | grep -q 'Clamd responding: true'  && break
+  RESPONSE=$(curl -s "$CLAMAV_HTTP_ENDPOINT")
+  echo "[$n/60] Health check response: ${RESPONSE:-<no response>}"
+  echo "$RESPONSE" | grep -q 'Clamd responding: true' && break
   n=$[$n+1]
   sleep 10
 done
 
+echo "--- clamav container logs ---"
+docker-compose -f test/docker-compose.yml logs --tail=30 clamav
+echo "--- clamav-mirror container logs ---"
+docker-compose -f test/docker-compose.yml logs --tail=20 clamav-mirror
 
-if [ $n -ge 30 ]
+if [ $n -ge 60 ]
 then
   failures=1
   echo "Clamav failed to start"

@@ -1,10 +1,10 @@
 module github.com/ukhomeoffice/clamav-http/clamav-http
 
-go 1.25
+go 1.26
 
 require (
-	github.com/dutchcoders/go-clamd v0.0.0-20170520113014-b970184f4d9e
-	github.com/sirupsen/logrus v1.9.3
+	github.com/IntelXLabs-LLC/go-clamd v1.0.1
+	github.com/sirupsen/logrus v1.9.4
 )
 
-require golang.org/x/sys v0.29.0 // indirect
+require golang.org/x/sys v0.44.0 // indirect
