@@ -4,7 +4,7 @@ import (
 	"net/http"
 	"strings"
 
-	"github.com/dutchcoders/go-clamd"
+	"github.com/IntelXLabs-LLC/go-clamd"
 	"github.com/sirupsen/logrus"
 )
 

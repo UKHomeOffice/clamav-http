@@ -1,9 +1,9 @@
-FROM golang:1.25.6-alpine3.23 AS supercronic-build
-RUN go install github.com/aptible/supercronic@v0.2.34
+FROM golang:1.26.3-alpine3.23 AS supercronic-build
+RUN go install github.com/aptible/supercronic@v0.2.45
 
-FROM python:3.14-alpine3.23
+FROM python:3.14-alpine3.23.4
 
-ENV CLAM_VERSION=1.4.3-r2
+ENV CLAM_VERSION=1.4.4-r0
 WORKDIR /clam
 
 # Add edge repository
