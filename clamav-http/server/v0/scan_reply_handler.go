@@ -40,13 +40,16 @@ func (srh *ScanReplyHandler) ServeHTTP(w http.ResponseWriter, r *http.Request) {
 	}
 
 	c := clamd.NewClamd(srh.Address)
-	response, err := c.ScanStream(f, make(chan bool))
+	abort := make(chan bool)
+	defer close(abort)
 
+	response, err := c.ScanStream(f, abort)
 	if err != nil {
 		w.WriteHeader(http.StatusInternalServerError)
 		w.Write([]byte("not okay"))
 		return
 	}
+	defer r.MultipartForm.RemoveAll()
 
 	result := <-response
 	w.WriteHeader(http.StatusOK)
