@@ -1,4 +1,4 @@
-FROM golang:1.26.3-alpine3.23 AS builder
+FROM golang:1.26.4-alpine3.23 AS builder
 
 WORKDIR /go/src/github.com/ukhomeoffice/clamav-http/clamav-http
 
@@ -9,7 +9,7 @@ COPY server/  ./server/
 RUN CGO_ENABLED=0 GOOS=linux go install -v \
             github.com/ukhomeoffice/clamav-http/clamav-http
 
-FROM alpine:3.23.4
+FROM alpine:3.23
 
 RUN apk update && apk upgrade --no-cache && \
     apk --no-cache add ca-certificates
