@@ -1,5 +1,5 @@
 FROM golang:1.26.4-alpine3.23 AS supercronic-build
-RUN go install github.com/aptible/supercronic@v0.2.45
+RUN go install github.com/aptible/supercronic@v0.2.46
 
 FROM python:3.14-alpine3.23
 
