@@ -35,13 +35,27 @@ JIRA_EPIC_KEY = "ACPENG-2598"
 WORKSPACE = Path(__file__).parent.parent / "workspace"
 
 
+def get_current_versions(dockerfile_path):
+    """
+    Reads the Dockerfile to get the current versions
+    of Alpine and ClamAV
+    """
+    pass
 
-def retrieve_latest_versions() -> list[str]:
+
+def retrieve_latest_clam_av_versions() -> list[str]:
     """
     Calls https://api.github.com/repos/Cisco-Talos/clamav/releases?per_page=5
     to get the latest 5 ClamAV releases 
     """
     pass
+
+
+def retrieve_latest_alpine_version():
+    """
+    Retrieves the latest alpine version with a ClamAV
+    community package
+    """
 
 
 def get_latest_lts_version() -> float:
@@ -51,9 +65,17 @@ def get_latest_lts_version() -> float:
     """
     pass
 
-def update_required(current_clam_av_ver, latest_clam_av_ver) -> bool:
+
+def clam_av_update_required(current_clam_av_ver, latest_clam_av_ver) -> bool:
     """
     Compares the latest ClamAV LTS version against
+    the current version"""
+    pass
+
+
+def alpine_update_required(current_alpine_ver, latest_alpine_ver) -> bool:
+    """
+    Compares the latest Alpine version against
     the current version"""
     pass
 
@@ -62,6 +84,7 @@ def build_title(latest_clam_av_ver) -> str:
     """
     Builds the Jira ticket title from version"""
     pass
+
 
 def ticket_already_exists(ticket_title: str) -> bool:
     """
