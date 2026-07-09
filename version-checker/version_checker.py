@@ -39,7 +39,7 @@ Usage:
 
 Requires:
     export GITLAB_TOKEN="read-only-PAT"      # always (reads clamav-deploy)
-    export JIRA_TOKEN="your-PAT"             # only when creating tickets
+    export JIRA_API_TOKEN="your-PAT"         # only when creating tickets
 """
 from __future__ import annotations
 
@@ -602,9 +602,9 @@ def main() -> None:
         print(f"\nDRY RUN - would file {len(tickets)} ticket(s).")
         return
 
-    token = os.environ.get("JIRA_TOKEN")
+    token = os.environ.get("JIRA_API_TOKEN")
     if not token:
-        print("Error: JIRA_TOKEN environment variable is not set.")
+        print("Error: JIRA_API_TOKEN environment variable is not set.")
         sys.exit(1)
 
     from atlassian import Jira

@@ -194,8 +194,8 @@ steps:
       cpu: 500
       memory: 512Mi
   environment:
-    JIRA_TOKEN:
-      from_secret: jira_token
+    JIRA_API_TOKEN:
+      from_secret: JIRA_API_TOKEN
     GITLAB_TOKEN:
       from_secret: gitlab_token
   commands:
