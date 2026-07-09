@@ -7,6 +7,12 @@ platform:
   os: linux
   arch: amd64
 
+# Builds/scans run on push/PR/tag - never on the version-check cron below.
+trigger:
+  event:
+    exclude:
+    - cron
+
 steps:
 - name: test_api
   pull: always
@@ -163,5 +169,43 @@ steps:
 services:
 - name: docker
   image: 340268328991.dkr.ecr.eu-west-2.amazonaws.com/acp/dind
+
+---
+kind: pipeline
+type: kubernetes
+name: version-check
+
+platform:
+  os: linux
+  arch: amd64
+
+# Runs only on a scheduled Drone cron (create the cron in Drone, targeting
+# master). Raises Jira tickets when ClamAV/Alpine need attention (ACPENG-2944).
+trigger:
+  event:
+  - cron
+
+steps:
+- name: clamav-version-check
+  pull: if-not-exists
+  image: 340268328991.dkr.ecr.eu-west-2.amazonaws.com/acp/acp/python-trivy:v1.0.0
+  resources:
+    limits:
+      cpu: 500
+      memory: 512Mi
+  environment:
+    JIRA_TOKEN:
+      from_secret: jira_token
+    GITLAB_TOKEN:
+      from_secret: gitlab_token
+  commands:
+  - cd version-checker
+  # Install into a venv so a PEP 668 "externally-managed-environment" base image
+  # can't refuse the install. Drone runs these commands as one shell script, so
+  # the activate persists to the pip/python lines below.
+  - python -m venv /tmp/venv
+  - . /tmp/venv/bin/activate
+  - pip install --no-cache-dir -r requirements.txt
+  - python version_checker.py
 
 ...
