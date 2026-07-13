@@ -235,6 +235,12 @@ steps:
   - python -m venv /tmp/venv
   - . /tmp/venv/bin/activate
   - pip install --no-cache-dir -r requirements.txt
+  # TEMPORARY - REMOVE BEFORE MERGE. Jira answered the JQL as an anonymous user,
+  # so the PAT is being sent but not accepted. This probe reports the token's
+  # length (not its value) and who Jira thinks we are. 200 = the PAT works and
+  # the account it names needs Browse rights on ACPENG; 401 = the PAT itself is
+  # rejected, so it is expired, revoked, or not a Data Center PAT.
+  - python -c "import os,requests;t=os.environ['JIRA_API_TOKEN'];print('token chars:',len(t),'| after strip:',len(t.strip()));r=requests.get('https://collaboration.homeoffice.gov.uk/jira/rest/api/2/myself',headers={'Authorization':'Bearer '+t.strip()},timeout=20);print('GET /myself ->',r.status_code);print(r.text[:300])"
   - python version_checker.py
 
 ...

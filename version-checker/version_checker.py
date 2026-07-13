@@ -602,7 +602,9 @@ def main() -> None:
         print(f"\nDRY RUN - would file {len(tickets)} ticket(s).")
         return
 
-    token = os.environ.get("JIRA_API_TOKEN")
+    # Strip: a stray newline or space from however the secret was stored makes
+    # the Bearer header malformed, and Jira answers as if we were anonymous.
+    token = os.environ.get("JIRA_API_TOKEN", "").strip()
     if not token:
         print("Error: JIRA_API_TOKEN environment variable is not set.")
         sys.exit(1)
