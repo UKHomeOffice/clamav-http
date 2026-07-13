@@ -1,3 +1,7 @@
 atlassian-python-api==3.41.16
-requests==2.31.0
+# Matches the python-trivy image's preinstalled /opt/pydeps. Pinning below
+# 2.32.0 downgrades it and breaks the image's python-gitlab, which requires
+# >=2.32.0. 2.32.x also carries the fixes for the verify=False session leak
+# and the .netrc credential leak.
+requests==2.34.0
 PyYAML==6.0.2
