@@ -199,20 +199,18 @@ platform:
   os: linux
   arch: amd64
 
-# Runs only on a scheduled Drone cron (create the cron in Drone, targeting
-# master). Raises Jira tickets when ClamAV/Alpine need attention (ACPENG-2944).
+# Raises Jira tickets when ClamAV/Alpine need attention (ACPENG-2944).
 #
-# TEMPORARY - REVERT BEFORE MERGE. The push trigger and branch filter below let
-# this pipeline run from the feature branch, so we can prove the drone-gh pods
-# can reach internal GitLab before merging. A cron build checks out master's
-# .drone.yml, so that is otherwise untestable until it is too late to fix.
-# On revert, restore to:  event: [cron, custom]
+# cron   - the schedule itself, registered in Drone against master.
+# custom - lets anyone run the check on demand from the Drone UI or
+#          `drone build create`, without waiting for the next scheduled firing.
+#
+# Deliberately not push/pull_request: the answer changes when Alpine or ClamAV
+# publish something, not when someone commits to this repo.
 trigger:
   event:
   - cron
-  - push
-  branch:
-  - ACPENG-2944
+  - custom
 
 steps:
 - name: clamav-version-check
@@ -235,12 +233,6 @@ steps:
   - python -m venv /tmp/venv
   - . /tmp/venv/bin/activate
   - pip install --no-cache-dir -r requirements.txt
-  # TEMPORARY - REMOVE BEFORE MERGE. Jira answered the JQL as an anonymous user,
-  # so the PAT is being sent but not accepted. This probe reports the token's
-  # length (not its value) and who Jira thinks we are. 200 = the PAT works and
-  # the account it names needs Browse rights on ACPENG; 401 = the PAT itself is
-  # rejected, so it is expired, revoked, or not a Data Center PAT.
-  - python -c "import os,requests;t=os.environ['JIRA_API_TOKEN'];print('token chars:',len(t),'| after strip:',len(t.strip()));r=requests.get('https://collaboration.homeoffice.gov.uk/jira/rest/api/2/myself',headers={'Authorization':'Bearer '+t.strip()},timeout=20);print('GET /myself ->',r.status_code);print(r.text[:300])"
   - python version_checker.py
 
 ...
