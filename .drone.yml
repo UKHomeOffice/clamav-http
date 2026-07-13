@@ -14,6 +14,26 @@ trigger:
     - cron
 
 steps:
+- name: test-version-checker
+  pull: if-not-exists
+  image: 340268328991.dkr.ecr.eu-west-2.amazonaws.com/acp/acp/python-trivy:v1.0.0
+  resources:
+    limits:
+      cpu: 500
+      memory: 512Mi
+  commands:
+  - cd version-checker
+  # Same venv as the version-check cron below: a PEP 668 "externally-managed-
+  # environment" base image refuses a bare pip install.
+  - python -m venv /tmp/venv
+  - . /tmp/venv/bin/activate
+  - pip install --no-cache-dir -r requirements-dev.txt
+  - python -m pytest tests/ -q
+  when:
+    event:
+    - push
+    - pull_request
+
 - name: test_api
   pull: always
   image: docker/compose:alpine-1.29.2
