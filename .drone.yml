@@ -235,8 +235,6 @@ steps:
   - python -m venv /tmp/venv
   - . /tmp/venv/bin/activate
   - pip install --no-cache-dir -r requirements.txt
-  # TEMPORARY - REVERT BEFORE MERGE. --dry-run proves the GitLab fetch, tag
-  # resolution and rules without filing a Jira ticket from a feature branch.
-  - python version_checker.py --dry-run
+  - python version_checker.py
 
 ...
