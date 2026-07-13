@@ -7,7 +7,33 @@ platform:
   os: linux
   arch: amd64
 
+# Builds/scans run on push/PR/tag - never on the version-check cron below.
+trigger:
+  event:
+    exclude:
+    - cron
+
 steps:
+- name: test-version-checker
+  pull: if-not-exists
+  image: 340268328991.dkr.ecr.eu-west-2.amazonaws.com/acp/acp/python-trivy:v1.0.0
+  resources:
+    limits:
+      cpu: 500
+      memory: 512Mi
+  commands:
+  - cd version-checker
+  # Same venv as the version-check cron below: a PEP 668 "externally-managed-
+  # environment" base image refuses a bare pip install.
+  - python -m venv /tmp/venv
+  - . /tmp/venv/bin/activate
+  - pip install --no-cache-dir -r requirements-dev.txt
+  - python -m pytest tests/ -q
+  when:
+    event:
+    - push
+    - pull_request
+
 - name: test_api
   pull: always
   image: docker/compose:alpine-1.29.2
@@ -163,5 +189,50 @@ steps:
 services:
 - name: docker
   image: 340268328991.dkr.ecr.eu-west-2.amazonaws.com/acp/dind
+
+---
+kind: pipeline
+type: kubernetes
+name: version-check
+
+platform:
+  os: linux
+  arch: amd64
+
+# Raises Jira tickets when ClamAV/Alpine need attention (ACPENG-2944).
+#
+# cron   - the schedule itself, registered in Drone against master.
+# custom - lets anyone run the check on demand from the Drone UI or
+#          `drone build create`, without waiting for the next scheduled firing.
+#
+# Deliberately not push/pull_request: the answer changes when Alpine or ClamAV
+# publish something, not when someone commits to this repo.
+trigger:
+  event:
+  - cron
+  - custom
+
+steps:
+- name: clamav-version-check
+  pull: if-not-exists
+  image: 340268328991.dkr.ecr.eu-west-2.amazonaws.com/acp/acp/python-trivy:v1.0.0
+  resources:
+    limits:
+      cpu: 500
+      memory: 512Mi
+  environment:
+    JIRA_API_TOKEN:
+      from_secret: JIRA_API_TOKEN
+    GITLAB_TOKEN:
+      from_secret: gitlab_token
+  commands:
+  - cd version-checker
+  # Install into a venv so a PEP 668 "externally-managed-environment" base image
+  # can't refuse the install. Drone runs these commands as one shell script, so
+  # the activate persists to the pip/python lines below.
+  - python -m venv /tmp/venv
+  - . /tmp/venv/bin/activate
+  - pip install --no-cache-dir -r requirements.txt
+  - python version_checker.py
 
 ...
