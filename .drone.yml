@@ -201,9 +201,18 @@ platform:
 
 # Runs only on a scheduled Drone cron (create the cron in Drone, targeting
 # master). Raises Jira tickets when ClamAV/Alpine need attention (ACPENG-2944).
+#
+# TEMPORARY - REVERT BEFORE MERGE. The push trigger and branch filter below let
+# this pipeline run from the feature branch, so we can prove the drone-gh pods
+# can reach internal GitLab before merging. A cron build checks out master's
+# .drone.yml, so that is otherwise untestable until it is too late to fix.
+# On revert, restore to:  event: [cron, custom]
 trigger:
   event:
   - cron
+  - push
+  branch:
+  - ACPENG-2944
 
 steps:
 - name: clamav-version-check
@@ -226,6 +235,8 @@ steps:
   - python -m venv /tmp/venv
   - . /tmp/venv/bin/activate
   - pip install --no-cache-dir -r requirements.txt
-  - python version_checker.py
+  # TEMPORARY - REVERT BEFORE MERGE. --dry-run proves the GitLab fetch, tag
+  # resolution and rules without filing a Jira ticket from a feature branch.
+  - python version_checker.py --dry-run
 
 ...
