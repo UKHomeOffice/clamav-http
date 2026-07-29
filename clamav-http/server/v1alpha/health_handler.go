@@ -22,8 +22,10 @@ type HealthHandler struct {
 
 func (hh *HealthHandler) ServeHTTP(w http.ResponseWriter, r *http.Request) {
 	c := clamd.NewClamd(hh.Address)
-	response, err := c.ScanStream(strings.NewReader(eicar), make(chan bool))
+	abort := make(chan bool)
+	defer close(abort)
 
+	response, err := c.ScanStream(strings.NewReader(eicar), abort)
 	if err != nil {
 		w.WriteHeader(http.StatusInternalServerError)
 		w.Write([]byte(err.Error()))
