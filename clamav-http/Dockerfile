@@ -1,4 +1,4 @@
-FROM golang:1.26.5-alpine3.24 AS builder
+FROM golang:1.26.7-alpine3.24 AS builder
 
 WORKDIR /go/src/github.com/ukhomeoffice/clamav-http/clamav-http
 
