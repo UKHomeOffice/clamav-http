@@ -1,13 +1,13 @@
-FROM golang:1.26.5-alpine3.23 AS supercronic-build
+FROM golang:1.26.5-alpine3.24 AS supercronic-build
 RUN go install github.com/aptible/supercronic@v0.2.46
 
-FROM python:3.14-alpine3.23
+FROM python:3.14-alpine3.24
 
-ENV CLAM_VERSION=1.4.4-r0
+ENV CLAM_VERSION=1.4.6-r0
 WORKDIR /clam
 
 # Add community repository for ClamAV
-RUN echo "http://dl-cdn.alpinelinux.org/alpine/v3.23/community" >> /etc/apk/repositories
+RUN echo "http://dl-cdn.alpinelinux.org/alpine/v3.24/community" >> /etc/apk/repositories
 
 RUN apk update && apk upgrade --no-cache && \
     apk add --no-cache bash curl rsync lighttpd \
